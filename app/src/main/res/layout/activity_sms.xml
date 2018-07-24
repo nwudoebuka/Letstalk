@@ -1,0 +1,125 @@
+<RelativeLayout
+    android:id="@+id/main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Sms">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:elevation="6dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:foregroundGravity="right"
+            android:layout_gravity="right"
+            android:layout_marginRight="16dp"
+            android:backgroundTint="@color/colorPrimary"
+            app:srcCompat="@android:drawable/ic_menu_add"
+            tools:layout_editor_absoluteX="241dp"
+            tools:layout_editor_absoluteY="-81dp" />
+
+
+    </android.support.v7.widget.Toolbar>
+    <ScrollView android:id="@+id/register_form" android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+
+
+
+
+        <LinearLayout android:orientation="vertical" android:layout_marginTop="16dp" android:id="@+id/email_login_form" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/fresmsm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primaryText"
+                android:textSize="24dp"
+                android:gravity="center"
+                android:text="Free Sms" />
+
+            <TextView
+                android:id="@+id/smsnote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primaryText"
+                android:textSize="14dp"
+                android:gravity="center"
+                android:text="use top right button to add number" />
+
+            <TextView
+                android:id="@+id/smsnumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primaryText"
+                android:textSize="14dp"
+                android:gravity="center"
+                android:text="" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/countrycode"
+                    android:layout_width="94dp"
+                    android:layout_height="match_parent"
+                    android:text="+000"
+                    android:textSize="18dp"
+                    android:visibility="gone"
+                    android:gravity="bottom"/>
+
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_height="wrap_content" android:layout_width="fill_parent">
+
+                    <EditText android:id="@+id/msg" android:nextFocusUp="@id/phone_register"
+                        android:nextFocusLeft="@id/phone_register" android:maxLength="100" android:gravity="bottom" android:imeOptions="actionNext"  android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Message" android:maxLines="1"  android:inputType="textPersonName"   android:imeActionId="@+id/login" />
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/secondaryText"
+                android:text="Note: sms is sent to any number whether registered on letstalk or not "
+                />
+
+
+
+            <Button
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/button_bg"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="Send" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+
+    <item
+        android:id="@+id/setautoresponse"
+        android:title="Enable Auto-responder"/>
+
+    <item
+        android:id="@+id/unsetautoresponse"
+        android:title="Disable Auto-responder"/>
+
+
+
+</menu>

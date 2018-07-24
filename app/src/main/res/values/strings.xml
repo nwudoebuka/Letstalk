@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Letstalk</string>
+    <string name="app_registered">Letstalk\u2122</string>
+    <string name="prompt_phone">Phone</string>
+    <string name="prompt_name">Name</string>
+    <string name="sms_notice">Let\'stalk will send an sms message to verify your phone number. enter your phone number below.</string>
+    <string name="terms">By clicking "Sign up" you agree to let\'s talk.</string>
+    <string name="already_registered">Already registered?.</string>
+    <string name="login_here">Login here.</string>
+    <string name="not_registered">Not registered?.</string>
+    <string name="register_here">Register here.</string>
+    <string name="app_agreement_head"> Welcome to Letstalk\u2122</string>
+    <string name="termsandconditions">Letstalk\u2122 adheres strictly to its privacy policy, therefore will not share you details
+    to a third party. hence we are not to be held responsible for any mismanagement of personal information or its likelihood.Letstalk\u2122
+        does not provide contact or communication to emergency numbers, we do not as well provide random or strange contacts. any
+        contact(s) found within your chatting environment is saved in your phonebook(Not a stranger).
+    </string>
+
+</resources>

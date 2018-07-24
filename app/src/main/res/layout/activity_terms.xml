@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/textandicons"
+    android:layout_gravity="center"
+    android:id="@+id/lin_lay"
+    android:orientation="vertical" >
+
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/schoolprofilepic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:src="@drawable/logo"
+        android:layout_gravity="center_horizontal"
+        android:translationZ="1dp"
+        app:civ_border_color="@color/colorPrimaryDark"
+        app:civ_border_width="2dp"
+        android:layout_marginTop="4dp"/>
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:textSize="24dp"
+        android:text="@string/app_agreement_head" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="carefully read our terms and conditions below." />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="@string/termsandconditions" />
+
+    <Button
+        android:id="@+id/agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_bg"
+        android:textColor="@color/colorPrimary"
+        android:text="I Agree" />
+
+    <TextView
+        android:id="@+id/do_not_agree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/clickableText"
+        android:layout_marginTop="16dp"
+        android:text="I do not agree."
+        android:gravity="center"/>
+
+</LinearLayout>
+</ScrollView>
