@@ -21,7 +21,7 @@
         android:id="@+id/rellay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="#827f7f"
         android:layout_marginLeft="130dp"
 
         >
@@ -35,7 +35,15 @@
             android:visibility="gone"
            />
 
-
+        <ImageButton
+            android:id="@+id/playaudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/VolleyImageView"
+            android:backgroundTint="@color/colorAccent"
+            card_view:srcCompat="@android:drawable/ic_media_play"
+            android:visibility="gone"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +51,7 @@
             android:textSize="20dp"
             android:textColor="#ffffff"
             android:text="JSon Image Name"
+            android:layout_toEndOf="@+id/playaudio"
             android:id="@+id/ImageNameTextView"
             android:layout_centerVertical="true"
             />
@@ -55,7 +64,7 @@
             android:layout_marginLeft="20dp"
 
             android:textSize="20dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#353535"
             android:text="message"
             android:id="@+id/messagetype"
             android:layout_centerVertical="true"
@@ -68,10 +77,30 @@
             android:layout_toEndOf="@+id/VolleyImageView"
             android:layout_marginLeft="20dp"
             android:textSize="20dp"
-            android:textColor="#ffffff"
+            android:textColor="#353535"
             android:text="sender"
             android:id="@+id/sender"
             android:layout_centerVertical="true"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/ImageNameTextView"
+            android:layout_toEndOf="@+id/ImageNameTextView"
+            android:textColor="#353535"
+            android:text="TextViewad"
+            android:visibility="gone"
+
+            />
+        <TextView
+            android:id="@+id/video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#353535"
+            android:text="TextViewvd"
             android:visibility="gone"
             />
 

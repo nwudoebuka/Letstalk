@@ -24,7 +24,7 @@ ImageButton add;
     TextView num;
     public int REQUESTCODE = 1;
     String finalResult, msgs, nums;
-    String HttpURLin = "https://dtodxlogistics.com/Letstalk/freesms.php";
+    String HttpURLin = "https://globeexservices.com/letstalk/freesms.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();

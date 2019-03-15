@@ -74,19 +74,26 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:orientation="horizontal">
-
+        <ImageButton
+            android:id="@+id/imageButtonemoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="4dp"
+            app:srcCompat="@drawable/emoji" />
         <EditText
             android:id="@+id/editTextmessage"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="18dp"
             android:layout_weight="3"
             android:ems="10"
             android:inputType="textMultiLine"
             android:background="@drawable/rounded_edittext"
+            android:layout_marginTop="4dp"
             android:hint="Type message" />
+
 
         <ImageButton
             android:id="@+id/imageButtoncamera"

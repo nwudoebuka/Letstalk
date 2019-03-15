@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.newage.letstalk">
 
-    <uses-sdk android:minSdkVersion="19" />
-
-    <!-- <uses-sdk android:minSdkVersion="9" /> -->
 
 
     <!-- adding internet permission -->
+    <uses-permission android:name="android.support.multidex.MultiDexApplication" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- adding permission to run service on device boot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -16,6 +14,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.STORAGE" />
 
     <application
         android:name=".App"
@@ -24,6 +25,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Launch"
@@ -64,8 +66,20 @@
         <activity
             android:name=".Sms"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Chat"
-            android:theme="@style/AppTheme.NoActionBar" ></activity>
+        <activity
+            android:name=".Chat"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AudioRecordActivity" />
+        <activity android:name=".Audioupload" />
+        <activity android:name=".Sendimage" />
+        <activity
+            android:name=".Groupchat"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Showimage"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Chat2"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

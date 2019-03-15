@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -171,53 +172,218 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         Viewholder.VollyImageView.setImageUrl(dataAdapterOBJ.getImageUrl(), imageLoader);
         Viewholder.ImageTitleTextView.setText(dataAdapterOBJ.getImageTitle());
+        Viewholder.audio.setText(dataAdapterOBJ.getImageaudio());
+        Viewholder.video.setText(dataAdapterOBJ.getImageaudio());
 if(dataAdapterOBJ.getImageSender().equalsIgnoreCase(dataAdapterOBJ.getImagesession())) {
 
-
-    Updatecardview cardv = new Updatecardview();
-    cardv.setme(1);
-    if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("nothing")) {
-        Viewholder.VollyImageView.setVisibility(View.VISIBLE);
-        Viewholder.ImageTitleTextView.setVisibility(View.GONE);
-        cardView.setCardBackgroundColor(Color.TRANSPARENT);
-        rlayout.setBackgroundColor(Color.TRANSPARENT);
-        Viewholder.VollyImageView.getLayoutParams().width=500;
-        Viewholder.VollyImageView.requestLayout();
-
-    }else{
-        // CODE FOR ADD MARGINS
+//
+//    Updatecardview cardv = new Updatecardview();
+//    cardv.setme(1);
+//    if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("nothingmtgcora")) {
+//        Viewholder.VollyImageView.setVisibility(View.VISIBLE);
+//        Viewholder.ImageTitleTextView.setVisibility(View.GONE);
+//        cardView.setCardBackgroundColor(Color.TRANSPARENT);
+//        rlayout.setBackgroundColor(Color.TRANSPARENT);
+//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//        linearParams.setMargins(300, 0, 0, 0);
+//        rlayout.setLayoutParams(linearParams);
+//        rlayout.requestLayout();
+//
+//    }else if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("audiomtgcora")){
+//        // CODE FOR ADD MARGINS
+//        Viewholder.VollyImageView.setVisibility(View.GONE);
+//        Viewholder.audio.setVisibility(View.GONE);
+//        Viewholder.playaudio.setVisibility(View.VISIBLE);
+////        Viewholder.ImageTitleTextView.setText("Play audio");
+//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//        linearParams.setMargins(300, 0, 0, 0);
+//        rlayout.setLayoutParams(linearParams);
+//        rlayout.requestLayout();
+//
+//    }else{
+//        // CODE FOR ADD MARGINS
+//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//        linearParams.setMargins(300, 0, 0, 0);
+//        rlayout.setLayoutParams(linearParams);
+//        rlayout.requestLayout();
+//
+//    }
+    if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("audiomtgcora")){
+//        // CODE FOR ADD MARGINS
+        Viewholder.VollyImageView.setVisibility(View.GONE);
+        Viewholder.audio.setVisibility(View.GONE);
+//        Viewholder.playaudio.setVisibility(View.VISIBLE);
+        Viewholder.ImageTitleTextView.setText("►Play audio");
+        message.setTextColor(Color.rgb(53, 53, 53));
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         linearParams.setMargins(300, 0, 0, 0);
         rlayout.setLayoutParams(linearParams);
         rlayout.requestLayout();
 
-    }
+    }else if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("connectedmtgcora")){
+        rlayout.setBackgroundColor(Color.TRANSPARENT);
+        Viewholder.ImageTitleTextView.setText("You are now connected to Messenger");
+        message.setTextColor(Color.BLACK);
+        message.setVisibility(View.GONE);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearParams.setMargins(300, 0, 300, 0);
+        rlayout.setLayoutParams(linearParams);
+        rlayout.requestLayout();
 
+    }else if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("nothingmtgcora")){
+        //        // CODE FOR ADD MARGINS
+        Viewholder.audio.setText(dataAdapterOBJ.getImageUrl());
+        Viewholder.VollyImageView.setVisibility(View.GONE);
+        Viewholder.audio.setVisibility(View.GONE);
+//        Viewholder.playaudio.setVisibility(View.VISIBLE);
+        Viewholder.ImageTitleTextView.setText("VIEW IMAGE");
+        message.setTextColor(Color.rgb(53, 53, 53));
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearParams.setMargins(300, 0, 0, 0);
+        rlayout.setLayoutParams(linearParams);
+        rlayout.requestLayout();
+
+    }else{
+        message.setTextColor(Color.rgb(0,0,0));
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearParams.setMargins(300, 0, 0, 0);
+        rlayout.setBackgroundColor(Color.rgb(130, 127, 127));
+        message.setTextColor(Color.rgb(53,53,53));
+        rlayout.setLayoutParams(linearParams);
+        rlayout.requestLayout();
+    }
 }else if(dataAdapterOBJ.getImageSender().equalsIgnoreCase("none")){
 
 
-
-    rlayout.setBackgroundColor(Color.rgb(160, 86, 226));
+    message.setTextColor(Color.rgb(45,45,45));
+    rlayout.setBackgroundColor(Color.rgb(188, 186, 186));
     // CODE FOR ADD MARGINS
     LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
             new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
     linearParams.setMargins(300, 0, 0, 0);
+
     rlayout.setLayoutParams(linearParams);
     rlayout.requestLayout();
 
 }else{
 
 // cardView.setCardBackgroundColor(Color.WHITE);
-    rlayout.setBackgroundColor(Color.WHITE);
-    // CODE FOR ADD MARGINS
-    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
-            new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-    linearParams.setMargins(0, 0, 300, 0);
-    rlayout.setLayoutParams(linearParams);
-    rlayout.requestLayout();
+//    rlayout.setBackgroundColor(Color.WHITE);
+//    // CODE FOR ADD MARGINS
+//    LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//            new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//    linearParams.setMargins(0, 0, 300, 0);
+//    rlayout.setLayoutParams(linearParams);
+//    rlayout.requestLayout();
+//
+//    message.setTextColor(Color.rgb(90, 17, 155));
 
-    message.setTextColor(Color.rgb(90, 17, 155));
+
+//    if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("nothingmtgcora")) {
+//        Viewholder.VollyImageView.setVisibility(View.VISIBLE);
+//        Viewholder.ImageTitleTextView.setVisibility(View.GONE);
+//        cardView.setCardBackgroundColor(Color.TRANSPARENT);
+//        rlayout.setBackgroundColor(Color.TRANSPARENT);
+//        rlayout.setBackgroundColor(Color.WHITE);
+//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//            new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//    linearParams.setMargins(0, 0, 300, 0);
+//    rlayout.setLayoutParams(linearParams);
+//    rlayout.requestLayout();
+//
+//    message.setTextColor(Color.rgb(90, 17, 155));
+//
+//    }else if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("audiomtgcora")){
+//        // CODE FOR ADD MARGINS
+//        Viewholder.VollyImageView.setVisibility(View.GONE);
+//        Viewholder.audio.setVisibility(View.GONE);
+//        Viewholder.playaudio.setVisibility(View.VISIBLE);
+//        Viewholder.ImageTitleTextView.setText("Play audio");
+//        rlayout.setBackgroundColor(Color.WHITE);
+//        rlayout.setBackgroundColor(Color.WHITE);
+//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//        linearParams.setMargins(0, 0, 300, 0);
+//        rlayout.setLayoutParams(linearParams);
+//        rlayout.requestLayout();
+//
+//        message.setTextColor(Color.rgb(90, 17, 155));
+//
+//    }else{
+//        rlayout.setBackgroundColor(Color.WHITE);
+//        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+//                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//        linearParams.setMargins(0, 0, 300, 0);
+//        rlayout.setLayoutParams(linearParams);
+//        rlayout.requestLayout();
+//
+//        message.setTextColor(Color.rgb(90, 17, 155));
+//
+//    }
+   
+
+
+    if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("audiomtgcora")){
+//        // CODE FOR ADD MARGINS
+        Viewholder.VollyImageView.setVisibility(View.GONE);
+        Viewholder.audio.setVisibility(View.GONE);
+//        Viewholder.playaudio.setVisibility(View.VISIBLE);
+        Viewholder.ImageTitleTextView.setText("►Play audio");
+        rlayout.setBackgroundColor(Color.WHITE);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearParams.setMargins(0, 0, 300, 0);
+        rlayout.setLayoutParams(linearParams);
+        rlayout.requestLayout();
+
+        message.setTextColor(Color.rgb(53, 53, 53));
+
+    }else if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("connectedmtgcora")){
+        rlayout.setBackgroundColor(Color.TRANSPARENT);
+        Viewholder.ImageTitleTextView.setText("You are now connected to Messenger");
+        message.setTextColor(Color.BLACK);
+        message.setVisibility(View.GONE);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearParams.setMargins(300, 0, 300, 0);
+        rlayout.setLayoutParams(linearParams);
+        rlayout.requestLayout();
+
+    }else if(dataAdapterOBJ.getImageTitle().equalsIgnoreCase("nothingmtgcora")){
+ // CODE FOR ADD MARGINS
+        Viewholder.audio.setText(dataAdapterOBJ.getImageUrl());
+        Viewholder.VollyImageView.setVisibility(View.GONE);
+        Viewholder.audio.setVisibility(View.GONE);
+//        Viewholder.playaudio.setVisibility(View.VISIBLE);
+        Viewholder.ImageTitleTextView.setText("VIEW IMAGE");
+        message.setTextColor(Color.rgb(53, 53, 53));
+        rlayout.setBackgroundColor(Color.WHITE);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearParams.setMargins(0, 0, 300, 0);
+        rlayout.setLayoutParams(linearParams);
+        rlayout.requestLayout();
+
+    }else  {
+        rlayout.setBackgroundColor(Color.WHITE);
+//        rlayout.setBackgroundResource(R.drawable.emoji);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearParams.setMargins(0, 0, 300, 0);
+        rlayout.setLayoutParams(linearParams);
+        rlayout.requestLayout();
+
+        message.setTextColor(Color.rgb(53, 53, 53));
+    }
+
 
 }
     }
@@ -233,7 +399,10 @@ if(dataAdapterOBJ.getImageSender().equalsIgnoreCase(dataAdapterOBJ.getImagesessi
         public TextView ImageTitleTextView;
         public TextView msgtype;
         public TextView sender;
+        public TextView audio;
+        public TextView video;
         public NetworkImageView VollyImageView ;
+        public ImageButton playaudio;
 
         public ViewHolder(View itemView) {
 
@@ -243,8 +412,11 @@ if(dataAdapterOBJ.getImageSender().equalsIgnoreCase(dataAdapterOBJ.getImagesessi
             ImageTitleTextView = (TextView) itemView.findViewById(R.id.ImageNameTextView) ;
             msgtype = (TextView) itemView.findViewById(R.id.messagetype) ;
             sender = (TextView) itemView.findViewById(R.id.sender) ;
+            audio = (TextView) itemView.findViewById(R.id.audio) ;
+            video = (TextView) itemView.findViewById(R.id.video) ;
             VollyImageView = (NetworkImageView) itemView.findViewById(R.id.VolleyImageView) ;
             message = (TextView) itemView.findViewById(R.id.ImageNameTextView) ;
+            playaudio = (ImageButton) itemView.findViewById(R.id.playaudio);
 
 
         }

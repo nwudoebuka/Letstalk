@@ -67,6 +67,7 @@ public class HttpParse {
                 FinalHttpData = bufferedReader.readLine();
             }
             else {
+
                 FinalHttpData = "Something Went Wrong";
             }
         } catch (Exception e) {

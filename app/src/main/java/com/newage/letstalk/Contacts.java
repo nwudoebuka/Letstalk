@@ -84,7 +84,7 @@ public class Contacts extends AppCompatActivity {
 //        session.checkLogin();
         HashMap<String, String> user = session.getUserDetails();
         final String nameofuser = user.get(SessionManager.KEY_NAME);
-        HTTP_JSON_URL = "https://dtodxlogistics.com/Letstalk/sync.php/?user="+nameofuser+"";
+        HTTP_JSON_URL = "https://globeexservices.com/letstalk/sync.php/?user="+nameofuser+"";
         Toast.makeText(Contacts.this, HTTP_JSON_URL, Toast.LENGTH_LONG).show();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact);

@@ -64,7 +64,7 @@ public class Login extends AppCompatActivity {
     Button Login;
 
     SessionManager session;
-    String HttpURLd = "https://dtodxlogistics.com/Letstalk/clear_contacts.php";
+    String HttpURLd = "https://globeexservices.com/letstalk/clear_contacts.php";
    public static  String HttpURLp = "";
 
     private static final int REQUEST_READ_CONTACTS = 444;
@@ -105,7 +105,7 @@ public class Login extends AppCompatActivity {
     EditText First_Name, Last_Name, Email, Password ;
     String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder,phonesync,namesync;
     String finalResult ;
-    String HttpURL = "https://dtodxlogistics.com/Letstalk/login.php";
+    String HttpURL = "https://globeexservices.com/letstalk/login.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
@@ -558,7 +558,7 @@ public class Login extends AppCompatActivity {
                         phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
                         phonesync = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
                         session.createLoginSession(Phone_Holder, Phone_Holder);
-                        HttpURLp = "https://dtodxlogistics.com/Letstalk/contacts.php/?user="+Phone_Holder+"";
+                        HttpURLp = "https://globeexservices.com/letstalk/contacts.php/?user="+Phone_Holder+"";
 //                        Toast.makeText(this, ""+namesync+"", Toast.LENGTH_SHORT).show();
                         output.append(""+ phonesync);
 //                        UserRegisterFunctionphone(phonesync,Phone_Holder,namesync);

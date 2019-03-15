@@ -75,8 +75,8 @@ FloatingActionButton chat;
     EditText First_Name, Last_Name, Email, Password ;
     String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder,phonetoserver;
     String finalResult, nameofuser;
-    String HttpURL = "https://dtodxlogistics.com/Letstalk/check_contact.php";
-    String HttpURLin = "https://dtodxlogistics.com/Letstalk/invite.php";
+    String HttpURL = "https://globeexservices.com/letstalk/check_contact.php";
+    String HttpURLin = "https://globeexservices.com/letstalk/invite.php";
     Boolean CheckEditText ;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
@@ -97,7 +97,7 @@ FloatingActionButton chat;
     String line = null;
     String result = null;
     ListView list;
-
+   public static Boolean loadedurl;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_fragment_chat, container, false);
@@ -110,7 +110,7 @@ FloatingActionButton chat;
 
         // name
         nameofuser = user.get(SessionManager.KEY_NAME);
-        urladdress = "http://dtodxlogistics.com/Letstalk/chat_contacts.php/?user="+nameofuser+"";
+        urladdress = "https://globeexservices.com/letstalk/chat_contacts.php/?user="+nameofuser+"";
 //        final TextView textViewToChange = (TextView) findViewById(R.id.welcome);
 
         progressBar = (ProgressBar) view.findViewById(R.id.ProgressBar1);
@@ -141,7 +141,7 @@ FloatingActionButton chat;
                 String nam = name[position].toString();
                 String phone = email[position].toString();
                 String img = imagepath[position].toString();
-                Intent i = new Intent(getActivity().getApplicationContext(), Chat.class);
+                Intent i = new Intent(getActivity().getApplicationContext(), Chat2.class);
                 i.putExtra("user", nam);
                 i.putExtra("img", img);
                 i.putExtra("phone", phone);
@@ -153,11 +153,13 @@ FloatingActionButton chat;
         });
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
-
+        this.loadedurl = false;
         collectData();
 
-        CustomListView customListView = new CustomListView(getActivity(), name,email,imagepath);
-        listView.setAdapter(customListView);
+        if(this.loadedurl == true) {
+            CustomListView customListView = new CustomListView(getActivity(), name, email, imagepath);
+            listView.setAdapter(customListView);
+        }
         return view;
 
 
@@ -361,9 +363,10 @@ FloatingActionButton chat;
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             is = new BufferedInputStream(con.getInputStream());
+            this.loadedurl = true;
         } catch (Exception ex) {
             ex.printStackTrace();
-
+this.loadedurl = false;
 Toast.makeText(getActivity().getApplicationContext(),"ehn no work",Toast.LENGTH_SHORT).show();
 
 
@@ -380,7 +383,7 @@ Toast.makeText(getActivity().getApplicationContext(),"ehn no work",Toast.LENGTH_
             }
             is.close();
             result = sb.toString();
-
+            this.loadedurl = true;
 
         }catch (Exception ex){
             ex.printStackTrace();

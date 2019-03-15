@@ -140,11 +140,11 @@ public class TabFragmentprofile extends Fragment {
         // name
         String nameofuser = user.get(SessionManager.KEY_NAME);
         //codes go here
-        HttpURL = "https://dtodxlogistics.com/Letstalk/userdp.php/?user="+nameofuser+"";
-        HTTP_JSON_URL = "https://dtodxlogistics.com/Letstalk/userdp.php/?user="+nameofuser+"";
-        ServerUploadPath ="https://dtodxlogistics.com/Letstalk/updateprofile.php/?user="+nameofuser+"" ;
+        HttpURL = "https://becucredits.com/letstalk/userdp.php/?user="+nameofuser+"";
+        HTTP_JSON_URL = "https://becucredits.com/letstalk/userdp.php/?user="+nameofuser+"";
+        ServerUploadPath ="https://becucredits.com/letstalk/updateprofile.php/?user="+nameofuser+"" ;
         // Showing progress bar on button click.
-        imageUrl = "https://dtodxlogistics.com/Letstalk/images/"+nameofuser+".png";
+        imageUrl = "https://becucredits.com/letstalk/images/"+nameofuser+".png";
         //Calling GetDataFromServerIntoTextView method to Set JSon MySQL data into TextView.
 //        new GetDataFromServerIntoTextView(getActivity().getApplicationContext()).execute();
         JSON_HTTP_CALL();
@@ -527,7 +527,7 @@ public class TabFragmentprofile extends Fragment {
 
 
             } catch (JSONException e) {
-
+                Toast.makeText(getActivity().getApplicationContext(), "poor network", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
 

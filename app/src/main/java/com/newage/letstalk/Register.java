@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.media.Image;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -88,8 +89,8 @@ import static android.Manifest.permission.READ_CONTACTS;
 
 public class Register extends AppCompatActivity {
 
-
-
+//    int a = 4;
+//    int result = a == 4 ? 2 : 8;
     private static final int REQUEST_READ_CONTACTS = 444;
     private ListView mListView;
     private ProgressDialog pDialog, pDialogr,pDialogrd;
@@ -107,9 +108,9 @@ public class Register extends AppCompatActivity {
     EditText Name, Phone ;
     String Name_Holder, Phone_Holder,Otp_Holder,phonesync,namesync,Contact_Holder ;
     String finalResult ;
-    String HttpURLr = "https://dtodxlogistics.com/Letstalk/register.php";
+    String HttpURLr = "https://globeexservices.com/letstalk/register.php";
     public static String HttpURLp = "";
-    String HttpURLd = "https://dtodxlogistics.com/Letstalk/clear_contacts.php";
+    String HttpURLd = "https://globeexservices.com/letstalk/clear_contacts.php";
     Boolean CheckEditText,Status ;
     ProgressDialog progressDialog;
     HashMap<String,String> hashMap = new HashMap<>();
@@ -121,7 +122,7 @@ public class Register extends AppCompatActivity {
     JSONObject jsonObject = null ;
     String StringHolder = "" ;
     // Adding HTTP Server URL to string variable.
-    String HttpURL = "https://dtodxlogistics.com/Letstalk/countrycode.php", PhoneHolder;
+    String HttpURL = "https://globeexservices.com/letstalk/countrycode.php", PhoneHolder;
 
     Button Signup;
     TextView Terms, Already_registered, Login_here;
@@ -375,109 +376,56 @@ public class Register extends AppCompatActivity {
     }
 
     public void UserRegisterFunction(final String Name, final String Phone, final String Otp){
-
-        class UserRegisterFunctionClass extends AsyncTask<String,Void,String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialog = ProgressDialog.show(Register.this,"Connecting...",null,true,true);
-                progressDialog.setCanceledOnTouchOutside(false);
-                progressDialog.setCancelable(false);
-            }
-
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
-
-                super.onPostExecute(httpResponseMsg);
-                if(httpResponseMsg.equalsIgnoreCase("That phone number is already registered")){
-                    Status = false;
-                    AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
-                    alertDialog.setTitle("Number Exists");
-                    alertDialog.setMessage(httpResponseMsg);
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                }else if(httpResponseMsg.equalsIgnoreCase("Not yet registered")){
-                    Status = true;
-                    if(Status) {
-                        AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
-                        alertDialog.setTitle("Notice");
-                        alertDialog.setMessage("Letstalk will send an sms to " + Phone_Holder + " to verify its yours");
-                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Otp_Holder = "Null";
-                                        UserRegisterFunction(Name_Holder, Phone_Holder, Otp_Holder);
+        UserRegisterFunctionClass userRegisterFunctionClass = new UserRegisterFunctionClass();
+        userRegisterFunctionClass.execute(Name,Phone,Otp);
+    }
 
 
+    class UserRegisterFunctionClass extends AsyncTask<String,Void,String> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(Register.this,"Connecting...",null,true,true);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setCancelable(false);
+        }
 
-                                    }
-
-
-                                });
-                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int id) {
-
-                                //...
+        @Override
+        protected void onPostExecute(String httpResponseMsg) {
+Toast.makeText(getBaseContext(),"seen",Toast.LENGTH_LONG).show();
+            super.onPostExecute(httpResponseMsg);
+            if(httpResponseMsg.equalsIgnoreCase("That phone number is already registered")){
+                Status = false;
+                AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
+                alertDialog.setTitle("Number Exists");
+                alertDialog.setMessage(httpResponseMsg);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-
                             }
                         });
-
-                        alertDialog.show();
-
-//to prevent a dialog box from being cancled when clicked on the return button
-
-                        alertDialog.setCancelable(false);
-
-                        //And to prevent dialog box from getting dismissed on outside touch use this
-
-                        alertDialog.setCanceledOnTouchOutside(false);
-
-                    }
-                }else if(httpResponseMsg.equalsIgnoreCase("Registration successful")){
-
-                    // Since reading contacts takes more time, let's run it on a separate thread.
-                    session.createLoginSession(Phone_Holder, Phone_Holder);
-                    pDialogr = new ProgressDialog(Register.this);
-                    pDialogr.setMessage("Synchronizing please wait...");
-                    pDialogr.setCancelable(false);
-                    pDialogr.show();
-                    UserRegisterFunctiondelete(Phone_Holder);
-                    getContacts();
-
-//                    AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
-//                    alertDialog.setTitle("Almost Done");
-//                    alertDialog.setMessage("Please wait while your contacts are synchronized");
-//                    alertDialog.show();
-
-
-//                    AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
-//                    alertDialog.setTitle("Success");
-//                    alertDialog.setMessage(httpResponseMsg);
-//                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-//                            new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//                                }
-//                            });
-//                    alertDialog.setCancelable(false);
-//                    alertDialog.setCanceledOnTouchOutside(false);
-//                    alertDialog.show();
-
-
-                } else if(httpResponseMsg.equalsIgnoreCase("Wrong verification code")){
-
+                alertDialog.show();
+            }else if(httpResponseMsg.equalsIgnoreCase("Not yet registered")){
+                Status = true;
+                if(Status) {
                     AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
-                    alertDialog.setTitle("Wrong OTP");
-                    alertDialog.setMessage("Wrong Verification Code");
+                    alertDialog.setTitle("Notice");
+                    alertDialog.setMessage("Letstalk will send an sms to " + Phone_Holder + " to verify its yours");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Otp_Holder = "Null";
+                                    UserRegisterFunction(Name_Holder, Phone_Holder, Otp_Holder);
+
+
+
+
+                                }
+
+
+                            });
                     alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int id) {
@@ -499,65 +447,119 @@ public class Register extends AppCompatActivity {
                     alertDialog.setCanceledOnTouchOutside(false);
 
                 }
-                else if(httpResponseMsg.equalsIgnoreCase("otp sent")){
+            }else if(httpResponseMsg.equalsIgnoreCase("Registration successful")){
+
+                // Since reading contacts takes more time, let's run it on a separate thread.
+                session.createLoginSession(Phone_Holder, Phone_Holder);
+                pDialogr = new ProgressDialog(Register.this);
+                pDialogr.setMessage("Synchronizing please wait...");
+                pDialogr.setCancelable(false);
+                pDialogr.show();
+                UserRegisterFunctiondelete(Phone_Holder);
+                startActivity(new Intent(Register.this, Dashboard.class));
+                //getContacts();
+
+//                    AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
+//                    alertDialog.setTitle("Almost Done");
+//                    alertDialog.setMessage("Please wait while your contacts are synchronized");
+//                    alertDialog.show();
 
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Register.this);
-                    builder.setTitle("OTP");
-                    builder.setMessage("put OTP below to verify "+Phone_Holder+"");
+//                    AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
+//                    alertDialog.setTitle("Success");
+//                    alertDialog.setMessage(httpResponseMsg);
+//                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+//                            new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                    alertDialog.setCancelable(false);
+//                    alertDialog.setCanceledOnTouchOutside(false);
+//                    alertDialog.show();
+
+
+            } else if(httpResponseMsg.equalsIgnoreCase("Wrong verification code")){
+
+                AlertDialog alertDialog = new AlertDialog.Builder(Register.this).create();
+                alertDialog.setTitle("Wrong OTP");
+                alertDialog.setMessage("Wrong Verification Code");
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        //...
+                        dialog.dismiss();
+
+                    }
+                });
+
+                alertDialog.show();
+
+//to prevent a dialog box from being cancled when clicked on the return button
+
+                alertDialog.setCancelable(false);
+
+                //And to prevent dialog box from getting dismissed on outside touch use this
+
+                alertDialog.setCanceledOnTouchOutside(false);
+
+            }
+            else if(httpResponseMsg.equalsIgnoreCase("otp sent")){
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Register.this);
+                builder.setTitle("OTP");
+                builder.setMessage("put OTP below to verify "+Phone_Holder+"");
 // Set up the input
-                    final EditText input = new EditText(Register.this);
+                final EditText input = new EditText(Register.this);
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                    input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-                    builder.setView(input);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+                builder.setView(input);
 
 // Set up the buttons
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            m_Text = input.getText().toString();
-                            Otp_Holder = m_Text;
-                            UserRegisterFunction(Name_Holder, Phone_Holder, Otp_Holder);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = input.getText().toString();
+                        Otp_Holder = m_Text;
+                        UserRegisterFunction(Name_Holder, Phone_Holder, Otp_Holder);
 //                                            Toast.makeText(Register.this, ""+Otp_Holder+"", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    builder.setCancelable(false);
-                    builder.show();
-
-                }
-
-                progressDialog.dismiss();
-
-                Toast.makeText(Register.this,httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.show();
 
             }
 
-            @Override
-            protected String doInBackground(String... params) {
+            progressDialog.dismiss();
 
-                hashMap.put("name",params[0]);
+            Toast.makeText(Register.this,httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
 
-                hashMap.put("phone",params[1]);
-
-                hashMap.put("otp",params[2]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURLr);
-
-                return finalResult;
-            }
         }
 
-        UserRegisterFunctionClass userRegisterFunctionClass = new UserRegisterFunctionClass();
+        @Override
+        protected String doInBackground(String... params) {
 
-        userRegisterFunctionClass.execute(Name,Phone,Otp);
+            hashMap.put("name",params[0]);
+
+            hashMap.put("phone",params[1]);
+
+            hashMap.put("otp",params[2]);
+
+            finalResult = httpParse.postRequest(hashMap, HttpURLr);
+
+            return finalResult;
+        }
     }
+
 
     public void addNotification() {
         // define sound URI, the sound to be played when there's a notification
@@ -567,7 +569,7 @@ public class Register extends AppCompatActivity {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.logo)
                         .setContentTitle("New message")
-                        .setContentText("Hustle")
+                        .setContentText("you have a new message")
                         //adding sound to notification
                         .setSound(soundUri);
 
@@ -806,7 +808,7 @@ pDialog.dismiss();
                         phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
                         phonesync = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
                         session.createLoginSession(Phone_Holder, Phone_Holder);
-                        HttpURLp = "https://dtodxlogistics.com/Letstalk/contacts.php/?user="+Phone_Holder+"";
+                        HttpURLp = "https://globeexservices.com/letstalk/contacts.php/?user="+Phone_Holder+"";
                         Toast.makeText(this, ""+namesync+"", Toast.LENGTH_SHORT).show();
                         output.append(""+ phonesync);
 
@@ -863,6 +865,7 @@ pDialog.dismiss();
                     try {
                         JsonName.put("name"+ String.valueOf(i)+"", nameList.get(i));
                         JSONcontacts.put(""+ String.valueOf(i)+"", contactList.get(i));
+
                         EverythingJSON.put("num"+ String.valueOf(i)+"", JSONcontacts);
                         EverythingJSON.put("na"+ String.valueOf(i)+"", JsonName);
                     } catch (JSONException e) {
