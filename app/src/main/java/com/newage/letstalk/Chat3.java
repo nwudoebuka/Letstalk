@@ -1,5 +1,6 @@
 package com.newage.letstalk;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +62,8 @@ public class Chat3 extends AppCompatActivity {
         }
 
         //setTitle(contactJid);
+
+        startService();
 
         recyclerView = findViewById(R.id.msgListView);
         mMsgEditText = findViewById(R.id.messageEditText);
@@ -164,15 +167,39 @@ public class Chat3 extends AppCompatActivity {
 //                            Log.d(TAG, "Got a message from jid :" + from);
 //                        }
                         break;
-
+                    case XmppConnectionService.UI_AUTHENTICATED:
+                        Log.d(TAG,"Got a broadcast to show the main app window");
+                        //Show the main app window
+                        //showProgress(false);
+                        //Intent i2 = new Intent(mContext,ContactListActivity.class);
+                        //startActivity(i2);
+                        //finish();
+                        break;
                     default:
                         break;
                 }
             }
         };
 
+        //IntentFilter filter = new IntentFilter(XmppConnectionService.UI_AUTHENTICATED);
         IntentFilter filter = new IntentFilter(XmppConnectionService.NEW_MESSAGE);
         registerReceiver(mBroadcastReceiver, filter);
     }
 
+    private void startService() {
+        //Start the service
+        Intent i1 = new Intent(this, XmppConnectionService.class);
+        startService(i1);
+    }
+
+    //Check if service is running.
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
