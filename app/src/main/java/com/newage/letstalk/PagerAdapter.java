@@ -8,6 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.newage.letstalk.fragments.ChatTabFragment;
+import com.newage.letstalk.fragments.ContactTabFragment;
+import com.newage.letstalk.fragments.ProfileTabFragment;
+
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
 
@@ -21,13 +25,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                TabFragmentchat tab1 = new TabFragmentchat();
+                ChatTabFragment tab1 = new ChatTabFragment();
                 return tab1;
             case 1:
-                TabFragmentprofile tab2 = new TabFragmentprofile();
+                ProfileTabFragment tab2 = new ProfileTabFragment();
                 return tab2;
             case 2:
-                TabFragmentcontact tab3 = new TabFragmentcontact();
+                ContactTabFragment tab3 = new ContactTabFragment();
                 return tab3;
             default:
                 return null;

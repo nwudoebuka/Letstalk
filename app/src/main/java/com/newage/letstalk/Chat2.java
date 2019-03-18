@@ -242,12 +242,11 @@ public class Chat2 extends AppCompatActivity {
 //                   recyclerViewadapter.notifyDataSetChanged();
                     String newText = emojiconEditText.getText().toString();
                     textView.setText(newText);
-                    Toast.makeText(Chat2.this, newText, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), newText, Toast.LENGTH_LONG).show();
                     updatearray(Message_Holder);
                     emojiconEditText.setText("");
                 }else{
-                    Toast.makeText(Chat2.this, "Empty message", Toast.LENGTH_LONG).show();
-
+                    Toast.makeText(getBaseContext(), "Empty message", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -260,7 +259,7 @@ public class Chat2 extends AppCompatActivity {
                 progressBarimage.setVisibility(View.VISIBLE);
                 RQS_RECORDING = 1;
                 isimage = false;
-                Intent intent = new Intent(Chat2.this , AudioRecordActivity.class);
+                Intent intent = new Intent(getBaseContext(), AudioRecordActivity.class);
                 startActivityForResult(intent, RQS_RECORDING);
             }
 
@@ -287,12 +286,13 @@ public class Chat2 extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-        session = new SessionManager(getApplicationContext());
-
+        session = new SessionManager(getBaseContext());
 
         /**
          * Call this function whenever you want to check user login
@@ -302,7 +302,6 @@ public class Chat2 extends AppCompatActivity {
 //        session.checkLogin();
         HashMap<String, String> user = session.getUserDetails();
         nameofuser = user.get(SessionManager.KEY_NAME);
-
 
         HTTP_JSON_URL = "https://globeexservices.com/letstalk/messages.php/?frnd="+phone+"&user="+nameofuser+"";
         HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd="+phone+"&user="+nameofuser+"";
@@ -348,23 +347,12 @@ public class Chat2 extends AppCompatActivity {
 //Set the amount of time between each execution (in milliseconds)
                 5000);
 
-
-
-
-
-
-
-
         // Implementing Click Listener on RecyclerView.
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-
-            GestureDetector gestureDetector = new GestureDetector(Chat2.this, new GestureDetector.SimpleOnGestureListener() {
-
+            GestureDetector gestureDetector = new GestureDetector(getBaseContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
-
                     return true;
                 }
-
             });
             @Override
             public boolean onInterceptTouchEvent(RecyclerView Recyclerview, MotionEvent motionEvent) {
@@ -376,29 +364,29 @@ public class Chat2 extends AppCompatActivity {
                     //Getting RecyclerView Clicked Item value.
                     RecyclerViewItemPosition = Recyclerview.getChildAdapterPosition(view);
                     if(messagetypearray.get(RecyclerViewItemPosition).equalsIgnoreCase("audiomtgcora")){
-                        Intent i = new Intent(Chat2.this, Audioupload.class);
+                        Intent i = new Intent(getBaseContext(), Audioupload.class);
                         i.putExtra("url", audio_url_array.get(RecyclerViewItemPosition));
                         startActivity(i);
 
                     }else if(ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition).equalsIgnoreCase("audiomtgcora")){
-                        Intent i = new Intent(Chat2.this, Audioupload.class);
+                        Intent i = new Intent(getBaseContext(), Audioupload.class);
                         i.putExtra("url", audio_url_array.get(RecyclerViewItemPosition));
                         startActivity(i);
 
                     }else if(ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition).equalsIgnoreCase("nothingmtgcora")){
-                        Intent i = new Intent(Chat2.this, Showimage.class);
+                        Intent i = new Intent(getBaseContext(), Showimage.class);
                         i.putExtra("url", image_url_array.get(RecyclerViewItemPosition));
                         startActivity(i);
 
-                        Toast.makeText(Chat2.this, image_url_array.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), image_url_array.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
 
 
                     }else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Chat2.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
                         builder.setTitle("Edit");
                         builder.setMessage("edit message below");
 // Set up the input
-                        final EditText input = new EditText(Chat2.this);
+                        final EditText input = new EditText(getBaseContext());
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 //                    input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
@@ -424,7 +412,7 @@ public class Chat2 extends AppCompatActivity {
                         builder.setCancelable(false);
                         builder.show();
                         // Showing RecyclerView Clicked Item value using Toast.
-                        Toast.makeText(Chat2.this, ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -838,7 +826,7 @@ public class Chat2 extends AppCompatActivity {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-//                progressDialog = ProgressDialog.show(Chat.this,"Loading Data",null,true,true);
+//                progressDialog = ProgressDialog.show(MyChat.this,"Loading Data",null,true,true);
                 prog.setText("sending");
 
 
@@ -980,7 +968,7 @@ public class Chat2 extends AppCompatActivity {
         latestarray.setlatest(array3.length());
         blenght = latestarray.latest();
         newalenght = blenght - alenght;
-        Toast.makeText(Chat2.this, ""+String.valueOf(alenght)+" & "+ String.valueOf(newalenght)+"", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), ""+String.valueOf(alenght)+" & "+ String.valueOf(newalenght)+"", Toast.LENGTH_LONG).show();
         for(int i = 0; i<array3.length(); i++) {
 
             DataAdapter GetDataAdapter2 = new DataAdapter();
@@ -1026,14 +1014,11 @@ public class Chat2 extends AppCompatActivity {
 
                 ListOfdataAdapter.add(GetDataAdapter2);
 
-
-
                 int last = recyclerView.getAdapter().getItemCount()-1;
                 recyclerView.smoothScrollToPosition(last);
                 recyclerViewadapter.notifyDataSetChanged();
             }
         }
-
 
         Updatearray firstarray = new Updatearray();
         firstarray.setfirst(array3.length());
@@ -1095,9 +1080,6 @@ public class Chat2 extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
     public void UserRegisterFunctionauto(final String Phone, final String Msg){
 
         class UserRegisterFunctionClassauto extends AsyncTask<String,Void,String> {
@@ -1141,9 +1123,6 @@ public class Chat2 extends AppCompatActivity {
 
         userRegisterFunctionClassauto.execute(Phone,Msg);
     }
-
-
-
 
 
     public void UserRegisterFunctiondisauto(final String Phone){

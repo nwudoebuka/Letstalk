@@ -32,8 +32,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
@@ -52,25 +54,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.HashMap;
 import java.util.List;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.hdodenhof.circleimageview.*;
 import de.hdodenhof.circleimageview.CircleImageView;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -81,6 +88,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -100,12 +108,12 @@ public class Chat extends AppCompatActivity {
     int serverResponseCode;
     private String m_Text = "";
     public static String HTTP_JSON_URL = "";
-    String ImageName = "image_name" ;
-    String imgstatus ="imgstatus";
-    String ImagePath = "image_path" ;
+    String ImageName = "image_name";
+    String imgstatus = "imgstatus";
+    String ImagePath = "image_path";
     String HttpURLauto = "https://globeexservices.com/letstalk/autoresponder.php";
     String HttpURLdisauto = "https://globeexservices.com/letstalk/disableautoresponder.php";
-  String ServerUploadPath ="https://globeexservices.com/letstalk/sendimage.php" ;
+    String ServerUploadPath = "https://globeexservices.com/letstalk/sendimage.php";
     boolean check = true;
     String Image_Name_JSON = "messages";
     String Image_Sender_JSON = "sender";
@@ -114,15 +122,15 @@ public class Chat extends AppCompatActivity {
     String audio_url;
     String Image_URL_JSON = "dp";
     private ProgressDialog pDialog;
-    JsonArrayRequest RequestOfJSonArray ;
+    JsonArrayRequest RequestOfJSonArray;
     String result;
-    RequestQueue requestQueue ;
+    RequestQueue requestQueue;
     ImageButton image, audio;
-    View view ;
+    View view;
     // Save state
     private Parcelable recyclerViewState;
 
-    int RecyclerViewItemPosition ;
+    int RecyclerViewItemPosition;
 
     RecyclerView.LayoutManager layoutManagerOfrecyclerView;
 
@@ -135,22 +143,22 @@ public class Chat extends AppCompatActivity {
     ArrayList<String> image_url_array;
 
 
-    String user,img,phone,nameofuser;
+    String user, img, phone, nameofuser;
     String stringaudio;
-    TextView username,userphone,prog;
+    TextView username, userphone, prog;
     CircleImageView imageView;
     SessionManager session;
     ImageButton imageButtonsend;
-public int alenght,blenght, newalenght;
+    public int alenght, blenght, newalenght;
     int RQS_RECORDING;
     Button register, log_in;
-    EditText First_Name, Last_Name, Email, Password ;
+    EditText First_Name, Last_Name, Email, Password;
     String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder;
-    String finalResult ;
-   public static  String HttpURL = "";
-    Boolean CheckEditText ;
+    String finalResult;
+    public static String HttpURL = "";
+    Boolean CheckEditText;
     ProgressDialog progressDialog;
-    HashMap<String,String> hashMap = new HashMap<>();
+    HashMap<String, String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
 
     public static int LONG_PRESS_TIME = 500; // Time in miliseconds
@@ -158,9 +166,10 @@ public int alenght,blenght, newalenght;
     final Handler _handler = new Handler();
     Runnable _longPressed = new Runnable() {
         public void run() {
-            Log.i("info","LongPress");
+            Log.i("info", "LongPress");
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,40 +180,39 @@ public int alenght,blenght, newalenght;
         userphone = (TextView) findViewById(R.id.user_num);
         image = (ImageButton) findViewById(R.id.imageButtoncamera);
         audio = (ImageButton) findViewById(R.id.imageButtonaudio);
-        textaudio = (TextView)findViewById(R.id.audio) ;
-        progressBar = (ProgressBar)findViewById(R.id.pb);
-//        progressBar.setVisibility(View.VISIBLE);
-        user= i.getStringExtra("user");
+        textaudio = (TextView) findViewById(R.id.audio);
+        progressBar = (ProgressBar) findViewById(R.id.pb);
+
+//      progressBar.setVisibility(View.VISIBLE);
+        user = i.getStringExtra("user");
         img = i.getStringExtra("img");
-        phone= i.getStringExtra("phone");
+        phone = i.getStringExtra("phone");
 
         lin = (LinearLayout) findViewById(R.id.lin);
-        if(phone.equalsIgnoreCase("bot")){
+        if (phone.equalsIgnoreCase("bot")) {
             lin.setVisibility(View.GONE);
         }
-        message = (EditText)findViewById(R.id.editTextmessage);
+
+        message = (EditText) findViewById(R.id.editTextmessage);
         username.setText(user);
         userphone.setText(phone);
-        imageView = (de.hdodenhof.circleimageview.CircleImageView)findViewById(R.id.user_dp);
-        Picasso.with(Chat.this).load(img)
-                .placeholder(R.mipmap.defaultuser).error(R.mipmap.defaultuser)
-                .into(imageView);
+        imageView = (de.hdodenhof.circleimageview.CircleImageView) findViewById(R.id.user_dp);
+        Picasso.with(this).load(img).placeholder(R.mipmap.defaultuser).error(R.mipmap.defaultuser).into(imageView);
+
         setTitle("");
-        imageButtonsend = (ImageButton)findViewById(R.id.imageButtonsend);
+        imageButtonsend = (ImageButton) findViewById(R.id.imageButtonsend);
         imageButtonsend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CheckEditTextIsEmptyOrNot();
-               if(CheckEditText){
-                  //update arraylist with the message
+                if (CheckEditText) {
+                    //update arraylist with the message
 //                   recyclerViewadapter.notifyDataSetChanged();
-
-                   updatearray(Message_Holder);
-                   message.setText("");
-               }else{
-                   Toast.makeText(Chat.this, "Empty message", Toast.LENGTH_LONG).show();
-
-               }
+                    updatearray(Message_Holder);
+                    message.setText("");
+                } else {
+                    Toast.makeText(getBaseContext(), "Empty message", Toast.LENGTH_LONG).show();
+                }
             }
 
         });
@@ -214,7 +222,7 @@ public int alenght,blenght, newalenght;
             public void onClick(View view) {
                 RQS_RECORDING = 1;
                 isimage = false;
-                Intent intent = new Intent(Chat.this , AudioRecordActivity.class);
+                Intent intent = new Intent(getBaseContext(), AudioRecordActivity.class);
                 startActivityForResult(intent, RQS_RECORDING);
             }
 
@@ -236,15 +244,17 @@ public int alenght,blenght, newalenght;
             }
 
         });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-        session = new SessionManager(getApplicationContext());
-
+        session = new SessionManager(this);
 
         /**
          * Call this function whenever you want to check user login
@@ -253,11 +263,10 @@ public int alenght,blenght, newalenght;
          * */
 //        session.checkLogin();
         HashMap<String, String> user = session.getUserDetails();
-       nameofuser = user.get(SessionManager.KEY_NAME);
+        nameofuser = user.get(SessionManager.KEY_NAME);
 
-
-        HTTP_JSON_URL = "https://globeexservices.com/letstalk/messages.php/?frnd="+phone+"&user="+nameofuser+"";
-        HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd="+phone+"&user="+nameofuser+"";
+        HTTP_JSON_URL = "https://globeexservices.com/letstalk/messages.php/?frnd=" + phone + "&user=" + nameofuser + "";
+        HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd=" + phone + "&user=" + nameofuser + "";
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,44 +293,39 @@ public int alenght,blenght, newalenght;
 
         JSON_HTTP_CALL(0);
 
-
-
-
-
-
-      
-
         // Implementing Click Listener on RecyclerView.
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
 
             GestureDetector gestureDetector = new GestureDetector(Chat.this, new GestureDetector.SimpleOnGestureListener() {
 
-                @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
+                @Override
+                public boolean onSingleTapUp(MotionEvent motionEvent) {
 
                     return true;
                 }
 
             });
+
             @Override
             public boolean onInterceptTouchEvent(RecyclerView Recyclerview, MotionEvent motionEvent) {
 
                 view = Recyclerview.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
 
-                if(view != null && gestureDetector.onTouchEvent(motionEvent)) {
+                if (view != null && gestureDetector.onTouchEvent(motionEvent)) {
 
                     //Getting RecyclerView Clicked Item value.
                     RecyclerViewItemPosition = Recyclerview.getChildAdapterPosition(view);
-                    if(messagetypearray.get(RecyclerViewItemPosition).equalsIgnoreCase("audiomtgcora")){
+                    if (messagetypearray.get(RecyclerViewItemPosition).equalsIgnoreCase("audiomtgcora")) {
                         Intent i = new Intent(Chat.this, Audioupload.class);
                         i.putExtra("url", audio_url_array.get(RecyclerViewItemPosition));
                         startActivity(i);
 
-                    }else if(ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition).equalsIgnoreCase("audiomtgcora")){
+                    } else if (ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition).equalsIgnoreCase("audiomtgcora")) {
                         Intent i = new Intent(Chat.this, Audioupload.class);
                         i.putExtra("url", audio_url_array.get(RecyclerViewItemPosition));
                         startActivity(i);
 
-                    }else if(ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition).equalsIgnoreCase("nothingmtgcora")){
+                    } else if (ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition).equalsIgnoreCase("nothingmtgcora")) {
                         Intent i = new Intent(Chat.this, Showimage.class);
                         i.putExtra("url", image_url_array.get(RecyclerViewItemPosition));
                         startActivity(i);
@@ -329,7 +333,7 @@ public int alenght,blenght, newalenght;
                         Toast.makeText(Chat.this, image_url_array.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
 
 
-                    }else {
+                    } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
                         builder.setTitle("Edit");
                         builder.setMessage("edit message below");
@@ -362,7 +366,7 @@ public int alenght,blenght, newalenght;
                         // Showing RecyclerView Clicked Item value using Toast.
                         Toast.makeText(Chat.this, ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
                     }
-                    }
+                }
 
                 return false;
             }
@@ -385,27 +389,28 @@ public int alenght,blenght, newalenght;
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
 
-            if (requestCode == RQS_RECORDING) {
+        if (requestCode == RQS_RECORDING) {
 
-                if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
 
-                    // Great! User has recorded and saved the audio file
-                    result = data.getStringExtra("result");
+                // Great! User has recorded and saved the audio file
+                result = data.getStringExtra("result");
 
-                    Toast.makeText(Chat.this,
-                            "Saved: " + result,
-                            Toast.LENGTH_LONG).show();
-                    if(result == null){}else {
-                        new UploadFileAsync().execute("");
-                    }
-
-                    Log.d("debug", "Saved Path::" + result);
-
-
+                Toast.makeText(Chat.this,
+                        "Saved: " + result,
+                        Toast.LENGTH_LONG).show();
+                if (result == null) {
+                } else {
+                    new UploadFileAsync().execute("");
                 }
-                if (resultCode == Activity.RESULT_CANCELED) {
-                    // Oops! User has canceled the recording / back button
-                }
+
+                Log.d("debug", "Saved Path::" + result);
+
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                // Oops! User has canceled the recording / back button
+            }
 
 //                    super.onActivityResult(requestCode, resultCode, data);
 //
@@ -428,25 +433,25 @@ public int alenght,blenght, newalenght;
 //            ImageUploadToServerFunction();
 //        }
 
+        }
+
+        if (requestCode == 0 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+
+            try {
+
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
             }
 
-            if (requestCode == 0 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            ImageUploadToServerFunction();
 
-                Uri uri = data.getData();
-
-                try {
-
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-
-
-                } catch (IOException e) {
-
-                    e.printStackTrace();
-                }
-
-                ImageUploadToServerFunction();
-
-            }
+        }
 
     }
 
@@ -480,7 +485,7 @@ public int alenght,blenght, newalenght;
 //                // Great! User has recorded and saved the audio file
 //                result = I.getStringExtra("result");
 //
-//                Toast.makeText(Chat.this,
+//                Toast.makeText(MyChat.this,
 //                        "Saved: " + result,
 //                        Toast.LENGTH_LONG).show();
 //                new UploadFileAsync().execute("");
@@ -496,9 +501,9 @@ public int alenght,blenght, newalenght;
 //    }
 
 
-    public void ImageUploadToServerFunction(){
+    public void ImageUploadToServerFunction() {
 
-        ByteArrayOutputStream byteArrayOutputStreamObject ;
+        ByteArrayOutputStream byteArrayOutputStreamObject;
 
         byteArrayOutputStreamObject = new ByteArrayOutputStream();
 
@@ -508,29 +513,26 @@ public int alenght,blenght, newalenght;
 
         final String ConvertImage = Base64.encodeToString(byteArrayVar, Base64.DEFAULT);
 
-        class AsyncTaskUploadClass extends AsyncTask<Void,Void,String> {
+        class AsyncTaskUploadClass extends AsyncTask<Void, Void, String> {
 
             @Override
             protected void onPreExecute() {
 
                 super.onPreExecute();
                 prog.setText("sending");
-                Toast.makeText(Chat.this,"sending image",Toast.LENGTH_LONG).show();
+                Toast.makeText(Chat.this, "sending image", Toast.LENGTH_LONG).show();
             }
 
             @Override
             protected void onPostExecute(String string1) {
 
                 super.onPostExecute(string1);
-               Refresh();
+                Refresh();
                 prog.setText("sending");
-                Toast.makeText(Chat.this,string1,Toast.LENGTH_LONG).show();
-
-
+                Toast.makeText(Chat.this, string1, Toast.LENGTH_LONG).show();
 
 
             }
-
 
 
             @Override
@@ -538,7 +540,7 @@ public int alenght,blenght, newalenght;
 
                 Chat.ImageProcessClass imageProcessClass = new Chat.ImageProcessClass();
 
-                HashMap<String,String> HashMapParams = new HashMap<String,String>();
+                HashMap<String, String> HashMapParams = new HashMap<String, String>();
 
                 HashMapParams.put(ImageName, nameofuser);
                 HashMapParams.put(imgstatus, phone);
@@ -556,20 +558,20 @@ public int alenght,blenght, newalenght;
     }
 
 
-    public class ImageProcessClass{
+    public class ImageProcessClass {
 
-        public String ImageHttpRequest(String requestURL,HashMap<String, String> PData) {
+        public String ImageHttpRequest(String requestURL, HashMap<String, String> PData) {
 
             StringBuilder stringBuilder = new StringBuilder();
 
             try {
 
                 URL url;
-                HttpURLConnection httpURLConnectionObject ;
+                HttpURLConnection httpURLConnectionObject;
                 OutputStream OutPutStream;
-                BufferedWriter bufferedWriterObject ;
-                BufferedReader bufferedReaderObject ;
-                int RC ;
+                BufferedWriter bufferedWriterObject;
+                BufferedReader bufferedReaderObject;
+                int RC;
 
                 url = new URL(requestURL);
 
@@ -609,7 +611,7 @@ public int alenght,blenght, newalenght;
 
                     String RC2;
 
-                    while ((RC2 = bufferedReaderObject.readLine()) != null){
+                    while ((RC2 = bufferedReaderObject.readLine()) != null) {
 
                         stringBuilder.append(RC2);
                     }
@@ -666,28 +668,23 @@ public int alenght,blenght, newalenght;
 //
 //    }
 
-    public void CheckEditTextIsEmptyOrNot(){
+    public void CheckEditTextIsEmptyOrNot() {
 
         Message_Holder = message.getText().toString();
 
 
-
-
-
-        if(TextUtils.isEmpty(Message_Holder))
-        {
+        if (TextUtils.isEmpty(Message_Holder)) {
 
             CheckEditText = false;
 
-        }
-        else {
+        } else {
 
-            CheckEditText = true ;
+            CheckEditText = true;
         }
 
     }
 
-    public void JSON_HTTP_CALL(final int loop){
+    public void JSON_HTTP_CALL(final int loop) {
 
         RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL,
 
@@ -708,7 +705,7 @@ public int alenght,blenght, newalenght;
         requestQueue = Volley.newRequestQueue(Chat.this);
 
         requestQueue.add(RequestOfJSonArray);
-        if(loop == 0) {
+        if (loop == 0) {
             //Declare the timer
             Timer t = new Timer();
 //Set the schedule function and rate
@@ -727,10 +724,10 @@ public int alenght,blenght, newalenght;
         }
     }
 
-    public void ParseJSonResponse(JSONArray array){
-ListOfdataAdapter.clear();
+    public void ParseJSonResponse(JSONArray array) {
+        ListOfdataAdapter.clear();
         ImageTitleNameArrayListForClick.clear();
-        for(int i = 0; i<array.length(); i++) {
+        for (int i = 0; i < array.length(); i++) {
 
             DataAdapter GetDataAdapter2 = new DataAdapter();
 
@@ -754,7 +751,6 @@ ListOfdataAdapter.clear();
                 audio_url = json.getString(Image_audio_JSON);
 
 
-
                 GetDataAdapter2.setImageUrl(json.getString(Image_URL_JSON));
 
             } catch (JSONException e) {
@@ -767,7 +763,7 @@ ListOfdataAdapter.clear();
         recyclerViewadapter = new RecyclerViewAdapter(ListOfdataAdapter, this);
 
         recyclerView.setAdapter(recyclerViewadapter);
-       Updatearray firstarray = new Updatearray();
+        Updatearray firstarray = new Updatearray();
         firstarray.setfirst(array.length());
         alenght = firstarray.first();
 
@@ -778,49 +774,49 @@ ListOfdataAdapter.clear();
     }
 
 
-    public void updatearray(final String message){
-if(message.equalsIgnoreCase("image")){
+    public void updatearray(final String message) {
+        if (message.equalsIgnoreCase("image")) {
 
-}else {
-    DataAdapter GetDataAdapter2 = new DataAdapter();
-
-
-    GetDataAdapter2.setImageTitle(message);
-    GetDataAdapter2.setImageSender("none");
-    GetDataAdapter2.setsession(nameofuser);
-
-    // Adding image title name in array to display on RecyclerView click event.
-    ImageTitleNameArrayListForClick.add("https://globeexservices.com/letstalk/images/07038436255.png");
-
-    GetDataAdapter2.setImageUrl("https://globeexservices.com/letstalk/07038436255.png");
+        } else {
+            DataAdapter GetDataAdapter2 = new DataAdapter();
 
 
-    ListOfdataAdapter.add(GetDataAdapter2);
+            GetDataAdapter2.setImageTitle(message);
+            GetDataAdapter2.setImageSender("none");
+            GetDataAdapter2.setsession(nameofuser);
 
-    progressBar.setVisibility(View.GONE);
-    recyclerViewadapter = new RecyclerViewAdapter(ListOfdataAdapter, this);
+            // Adding image title name in array to display on RecyclerView click event.
+            ImageTitleNameArrayListForClick.add("https://globeexservices.com/letstalk/images/07038436255.png");
 
-    recyclerView.setAdapter(recyclerViewadapter);
+            GetDataAdapter2.setImageUrl("https://globeexservices.com/letstalk/07038436255.png");
 
 
-    int last = recyclerView.getAdapter().getItemCount() - 1;
-    recyclerView.smoothScrollToPosition(last);
-    recyclerViewadapter.notifyDataSetChanged();
-    UserRegisterFunction(message, nameofuser, phone);
-}
+            ListOfdataAdapter.add(GetDataAdapter2);
+
+            progressBar.setVisibility(View.GONE);
+            recyclerViewadapter = new RecyclerViewAdapter(ListOfdataAdapter, this);
+
+            recyclerView.setAdapter(recyclerViewadapter);
+
+
+            int last = recyclerView.getAdapter().getItemCount() - 1;
+            recyclerView.smoothScrollToPosition(last);
+            recyclerViewadapter.notifyDataSetChanged();
+            UserRegisterFunction(message, nameofuser, phone);
+        }
 
     }
 
 
-    public void UserRegisterFunction(final String Message, final String Sender, final String Receiver){
+    public void UserRegisterFunction(final String Message, final String Sender, final String Receiver) {
 
-        class UserRegisterFunctionClass extends AsyncTask<String,Void,String> {
+        class UserRegisterFunctionClass extends AsyncTask<String, Void, String> {
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
 
-//                progressDialog = ProgressDialog.show(Chat.this,"Loading Data",null,true,true);
+//                progressDialog = ProgressDialog.show(MyChat.this,"Loading Data",null,true,true);
                 prog.setText("sending");
 
 
@@ -833,16 +829,16 @@ if(message.equalsIgnoreCase("image")){
                 prog.setText("sent");
 //                progressDialog.dismiss();
                 JSON_HTTP_CALL2();
-                Toast.makeText(Chat.this,httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Chat.this, httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
 
             }
 
             @Override
             protected String doInBackground(String... params) {
 
-                hashMap.put("messages",params[0]);
-                hashMap.put("sender",params[1]);
-                hashMap.put("reciever",params[2]);
+                hashMap.put("messages", params[0]);
+                hashMap.put("sender", params[1]);
+                hashMap.put("reciever", params[2]);
                 finalResult = httpParse.postRequest(hashMap, HttpURL);
                 return finalResult;
             }
@@ -850,10 +846,10 @@ if(message.equalsIgnoreCase("image")){
 
         UserRegisterFunctionClass userRegisterFunctionClass = new UserRegisterFunctionClass();
 
-        userRegisterFunctionClass.execute(Message,Sender,Receiver);
+        userRegisterFunctionClass.execute(Message, Sender, Receiver);
     }
 
-    public void JSON_HTTP_CALL2(){
+    public void JSON_HTTP_CALL2() {
 
         RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL,
 
@@ -876,10 +872,10 @@ if(message.equalsIgnoreCase("image")){
         requestQueue.add(RequestOfJSonArray);
     }
 
-    public void ParseJSonResponse2(JSONArray array2){
+    public void ParseJSonResponse2(JSONArray array2) {
         ListOfdataAdapter.clear();
         ImageTitleNameArrayListForClick.clear();
-        for(int i = 0; i<array2.length(); i++) {
+        for (int i = 0; i < array2.length(); i++) {
 
             DataAdapter GetDataAdapter2 = new DataAdapter();
 
@@ -914,7 +910,7 @@ if(message.equalsIgnoreCase("image")){
         recyclerViewadapter = new RecyclerViewAdapter(ListOfdataAdapter, this);
 
         recyclerView.setAdapter(recyclerViewadapter);
-        int last = recyclerView.getAdapter().getItemCount()-1;
+        int last = recyclerView.getAdapter().getItemCount() - 1;
         recyclerView.smoothScrollToPosition(last);
         recyclerViewadapter.notifyDataSetChanged();
         Updatearray latestarray = new Updatearray();
@@ -928,11 +924,7 @@ if(message.equalsIgnoreCase("image")){
     }
 
 
-
-
-
-
-    public void JSON_HTTP_CALL3(){
+    public void JSON_HTTP_CALL3() {
 
         RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL,
 
@@ -955,15 +947,15 @@ if(message.equalsIgnoreCase("image")){
         requestQueue.add(RequestOfJSonArray);
     }
 
-    public void ParseJSonResponse3(JSONArray array3){
+    public void ParseJSonResponse3(JSONArray array3) {
 //        ListOfdataAdapter.clear();
         ImageTitleNameArrayListForClick.clear();
         Updatearray latestarray = new Updatearray();
         latestarray.setlatest(array3.length());
         blenght = latestarray.latest();
         newalenght = blenght - alenght;
-        Toast.makeText(Chat.this, ""+String.valueOf(alenght)+" & "+ String.valueOf(newalenght)+"", Toast.LENGTH_LONG).show();
-        for(int i = 0; i<array3.length(); i++) {
+        Toast.makeText(Chat.this, "" + String.valueOf(alenght) + " & " + String.valueOf(newalenght) + "", Toast.LENGTH_LONG).show();
+        for (int i = 0; i < array3.length(); i++) {
 
             DataAdapter GetDataAdapter2 = new DataAdapter();
 
@@ -990,10 +982,7 @@ if(message.equalsIgnoreCase("image")){
 
                 e.printStackTrace();
             }
-if(i >=alenght) {
-
-
-
+            if (i >= alenght) {
 
 
 //    GetDataAdapter2.setImageTitle("Added");
@@ -1006,14 +995,13 @@ if(i >=alenght) {
 //    GetDataAdapter2.setImageUrl("https://dtodxlogistics.com/Letstalk/images/07038436255.png");
 
 
-    ListOfdataAdapter.add(GetDataAdapter2);
+                ListOfdataAdapter.add(GetDataAdapter2);
 
 
-
-    int last = recyclerView.getAdapter().getItemCount()-1;
-    recyclerView.smoothScrollToPosition(last);
-    recyclerViewadapter.notifyDataSetChanged();
-}
+                int last = recyclerView.getAdapter().getItemCount() - 1;
+                recyclerView.smoothScrollToPosition(last);
+                recyclerViewadapter.notifyDataSetChanged();
+            }
         }
 
 
@@ -1069,7 +1057,7 @@ if(i >=alenght) {
             builder.setCancelable(false);
             builder.show();
             return true;
-        }else  if (id == R.id.unsetautoresponse) {
+        } else if (id == R.id.unsetautoresponse) {
 
             UserRegisterFunctiondisauto(nameofuser);
         }
@@ -1078,11 +1066,9 @@ if(i >=alenght) {
     }
 
 
+    public void UserRegisterFunctionauto(final String Phone, final String Msg) {
 
-
-    public void UserRegisterFunctionauto(final String Phone, final String Msg){
-
-        class UserRegisterFunctionClassauto extends AsyncTask<String,Void,String> {
+        class UserRegisterFunctionClassauto extends AsyncTask<String, Void, String> {
 
             @Override
             protected void onPreExecute() {
@@ -1111,8 +1097,8 @@ if(i >=alenght) {
             @Override
             protected String doInBackground(String... params) {
 
-                hashMap.put("user",params[0]);
-                hashMap.put("message",params[1]);
+                hashMap.put("user", params[0]);
+                hashMap.put("message", params[1]);
                 finalResult = httpParse.postRequest(hashMap, HttpURLauto);
 
                 return finalResult;
@@ -1121,16 +1107,13 @@ if(i >=alenght) {
 
         UserRegisterFunctionClassauto userRegisterFunctionClassauto = new UserRegisterFunctionClassauto();
 
-        userRegisterFunctionClassauto.execute(Phone,Msg);
+        userRegisterFunctionClassauto.execute(Phone, Msg);
     }
 
 
+    public void UserRegisterFunctiondisauto(final String Phone) {
 
-
-
-    public void UserRegisterFunctiondisauto(final String Phone){
-
-        class UserRegisterFunctionClassdisauto extends AsyncTask<String,Void,String> {
+        class UserRegisterFunctionClassdisauto extends AsyncTask<String, Void, String> {
 
             @Override
             protected void onPreExecute() {
@@ -1159,7 +1142,7 @@ if(i >=alenght) {
             @Override
             protected String doInBackground(String... params) {
 
-                hashMap.put("user",params[0]);
+                hashMap.put("user", params[0]);
 
                 finalResult = httpParse.postRequest(hashMap, HttpURLdisauto);
 
@@ -1194,7 +1177,7 @@ if(i >=alenght) {
                 if (sourceFile.isFile()) {
 
                     try {
-                        String upLoadServerUri = "https://globeexservices.com/letstalk/audiomessages/audio.php/?user="+nameofuser+"&frnd="+phone+"";
+                        String upLoadServerUri = "https://globeexservices.com/letstalk/audiomessages/audio.php/?user=" + nameofuser + "&frnd=" + phone + "";
 
                         // open a URL connection to the Servlet
                         FileInputStream fileInputStream = new FileInputStream(
@@ -1304,8 +1287,8 @@ if(i >=alenght) {
         protected void onProgressUpdate(Void... values) {
         }
     }
-    public void Refresh(){
 
+    public void Refresh() {
         String nam = user;
         String phonepass = phone;
         String imglink = img;
@@ -1315,5 +1298,4 @@ if(i >=alenght) {
         i.putExtra("phone", phonepass);
         startActivity(i);
     }
-
 }

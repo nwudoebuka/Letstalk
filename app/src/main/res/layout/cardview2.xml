@@ -1,39 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardview2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    card_view:cardElevation="0dp"
-    card_view:contentPadding="0dp"
-    card_view:cardCornerRadius="5dp"
-    card_view:cardMaxElevation="5dp"
-    card_view:cardBackgroundColor="@android:color/transparent"
+    android:layout_alignParentStart="true"
     android:layout_marginTop="8dp"
-
-    >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    card_view:cardBackgroundColor="@android:color/transparent"
+    card_view:cardCornerRadius="5dp"
+    card_view:cardElevation="0dp"
+    card_view:cardMaxElevation="5dp"
+    card_view:contentPadding="0dp">
 
     <RelativeLayout
         android:id="@+id/rellay"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#827f7f"
-        android:layout_marginLeft="130dp"
-
-        >
+        android:layout_marginStart="130dp"
+        android:layout_marginEnd="16dp"
+        android:background="#827f7f">
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/VolleyImageView"
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:src="@mipmap/defaultuser"
             android:layout_centerHorizontal="true"
-            android:visibility="gone"
-           />
+            android:src="@mipmap/defaultuser"
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/playaudio"
@@ -42,71 +36,64 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/VolleyImageView"
             android:backgroundTint="@color/colorAccent"
-            card_view:srcCompat="@android:drawable/ic_media_play"
-            android:visibility="gone"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:textSize="20dp"
-            android:textColor="#ffffff"
-            android:text="JSon Image Name"
-            android:layout_toEndOf="@+id/playaudio"
-            android:id="@+id/ImageNameTextView"
-            android:layout_centerVertical="true"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/VolleyImageView"
-            android:layout_toEndOf="@+id/VolleyImageView"
-            android:layout_marginLeft="20dp"
-
-            android:textSize="20dp"
-            android:textColor="#353535"
-            android:text="message"
-            android:id="@+id/messagetype"
-            android:layout_centerVertical="true"
-            android:visibility="gone"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/VolleyImageView"
-            android:layout_toEndOf="@+id/VolleyImageView"
-            android:layout_marginLeft="20dp"
-            android:textSize="20dp"
-            android:textColor="#353535"
-            android:text="sender"
-            android:id="@+id/sender"
-            android:layout_centerVertical="true"
             android:visibility="gone"
-            />
+            card_view:srcCompat="@android:drawable/ic_media_play" />
+
+        <TextView
+            android:id="@+id/ImageNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toEndOf="@+id/playaudio"
+            android:text="JSon Image Name"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/messagetype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/VolleyImageView"
+            tools:text="message"
+            android:textColor="#353535"
+            android:textSize="20sp"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/sender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toEndOf="@+id/VolleyImageView"
+            android:layout_toRightOf="@+id/VolleyImageView"
+            android:text="sender"
+            android:textColor="#353535"
+            android:textSize="20dp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/audio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ImageNameTextView"
             android:layout_toEndOf="@+id/ImageNameTextView"
-            android:textColor="#353535"
+            android:layout_toRightOf="@+id/ImageNameTextView"
             android:text="TextViewad"
-            android:visibility="gone"
+            android:textColor="#353535"
+            android:visibility="gone" />
 
-            />
         <TextView
             android:id="@+id/video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#353535"
             android:text="TextViewvd"
-            android:visibility="gone"
-            />
-
-
-
+            android:textColor="#353535"
+            android:visibility="gone" />
 
     </RelativeLayout>
-</LinearLayout>
+
 </android.support.v7.widget.CardView>

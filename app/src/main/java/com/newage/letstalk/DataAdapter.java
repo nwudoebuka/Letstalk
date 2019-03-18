@@ -4,8 +4,7 @@ package com.newage.letstalk;
  * Created by Newage_android on 5/11/2018.
  */
 
-public class DataAdapter
-{
+public class DataAdapter {
     public String ImageURL;
     public String ImageTitle;
     public String ImageSender;

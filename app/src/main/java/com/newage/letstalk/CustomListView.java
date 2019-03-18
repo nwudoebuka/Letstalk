@@ -5,8 +5,6 @@ package com.newage.letstalk;
  */
 
 import android.app.Activity;
-import android.app.VoiceInteractor;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -38,7 +36,7 @@ public class CustomListView extends ArrayAdapter<String> {
     Bitmap bitmap;
 
     public CustomListView(Activity context, String[] profilename, String[] email, String[] imagepath) {
-        super(context, R.layout.layout, profilename);
+        super(context, R.layout.single_friend, profilename);
         this.context = context;
         this.profilename = profilename;
         this.email = email;
@@ -54,7 +52,7 @@ public class CustomListView extends ArrayAdapter<String> {
         ViewHolder viewHolder = null;
         if(r==null){
             LayoutInflater layoutInflater = context.getLayoutInflater();
-            r = layoutInflater.inflate(R.layout.layout,null, true);
+            r = layoutInflater.inflate(R.layout.single_friend,null, true);
             viewHolder = new ViewHolder(r);
             r.setTag(viewHolder);
         }else {

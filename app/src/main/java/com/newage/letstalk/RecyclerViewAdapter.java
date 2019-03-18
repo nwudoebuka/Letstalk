@@ -68,13 +68,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         int layoutRes = 0;
 //        switch (viewType) {
 //            case 1:
-//                layoutRes = R.layout.cardview;
+//                layoutRes = R.single_friend.cardview;
 //                break;
 //            case 2:
-//                layoutRes = R.layout.cardview2;
+//                layoutRes = R.single_friend.cardview2;
 //                break;
 //            case 3:
-//                layoutRes = R.layout.cardview3;
+//                layoutRes = R.single_friend.cardview3;
 //                break;
 //        }
 //        View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
@@ -83,8 +83,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 //
 //        if ( HEADER_VIEW == 1){
-//            layoutRes = R.layout.cardview;
-//            //        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview2, parent, false);
+//            layoutRes = R.single_friend.cardview;
+//            //        View view = LayoutInflater.from(parent.getContext()).inflate(R.single_friend.cardview2, parent, false);
 //            View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
 //
 //            ViewHolder viewHolder = new ViewHolder(view);
@@ -92,8 +92,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //            return viewHolder;
 //
 //        }else if ( HEADER_VIEW == 2){
-//            layoutRes = R.layout.cardview3;
-//            //        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview2, parent, false);
+//            layoutRes = R.single_friend.cardview3;
+//            //        View view = LayoutInflater.from(parent.getContext()).inflate(R.single_friend.cardview2, parent, false);
 //            View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
 //
 //            ViewHolder viewHolder = new ViewHolder(view);
@@ -102,12 +102,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //
 //        }else{
 //
-//            layoutRes = R.layout.cardview2;
+//            layoutRes = R.single_friend.cardview2;
 //
 //
 //
 //
-//            //        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview2, parent, false);
+//            //        View view = LayoutInflater.from(parent.getContext()).inflate(R.single_friend.cardview2, parent, false);
 //            View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
 //
 //            ViewHolder viewHolder = new ViewHolder(view);
@@ -120,7 +120,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
 
-        //        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview2, parent, false);
+        //        View view = LayoutInflater.from(parent.getContext()).inflate(R.single_friend.cardview2, parent, false);
         View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(view);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.newage.letstalk">
 
-
-
     <!-- adding internet permission -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.support.multidex.MultiDexApplication" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- adding permission to run service on device boot -->
@@ -26,60 +26,43 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:largeHeap="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".Launch"
-            android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <activity android:name=".activity.Launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Splashscreen"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Register" />
-        <activity
-            android:name=".Terms"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Login" />
+        <activity android:name=".activity.Splashscreen" />
 
-        <service
-            android:name=".MyService"
-            android:enabled="true"
-            android:exported="true" />
 
-        <receiver android:name=".MyBroadcastReceiver">
+        <activity android:name=".activity.Register" />
+        <activity android:name=".activity.Terms" />
+        <activity android:name=".activity.Login" />
+        <activity android:name=".activity.Dashboard" />
+        <activity android:name=".Contacts" />
+        <activity android:name=".Contacts2" />
+        <activity android:name=".Sms" />
+        <activity android:name=".Chat" />
+        <activity android:name=".AudioRecordActivity" />
+        <activity android:name=".Audioupload" />
+        <activity android:name=".Sendimage" />
+        <activity android:name=".Groupchat" />
+        <activity android:name=".Showimage" />
+        <activity android:name=".Chat2" />
+        <activity android:name=".Chat3" />
+
+        <!--<service android:name=".MyService" android:enabled="true" android:exported="true" />-->
+        <service android:name=".services.PhoneContactIntentService" />
+
+        <receiver android:name=".services.MyBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".Dashboard"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Contacts"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Contacts2" />
-        <activity
-            android:name=".Sms"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Chat"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AudioRecordActivity" />
-        <activity android:name=".Audioupload" />
-        <activity android:name=".Sendimage" />
-        <activity
-            android:name=".Groupchat"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Showimage"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Chat2"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
