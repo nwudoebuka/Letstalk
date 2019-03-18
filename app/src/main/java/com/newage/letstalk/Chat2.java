@@ -199,6 +199,8 @@ public class Chat2 extends AppCompatActivity {
         user= i.getStringExtra("user");
         img= i.getStringExtra("img");
         phone= i.getStringExtra("phone");
+
+
         emojIcon = new EmojIconActions(this, rootView, emojiconEditText, emojiImageView);
         emojIcon.ShowEmojIcon();
         emojIcon.setIconsIds(R.drawable.ic_action_keyboard, R.drawable.smiley);
@@ -826,7 +828,7 @@ public class Chat2 extends AppCompatActivity {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-//                progressDialog = ProgressDialog.show(MyChat.this,"Loading Data",null,true,true);
+//                progressDialog = ProgressDialog.show(MyChatMessage.this,"Loading Data",null,true,true);
                 prog.setText("sending");
 
 

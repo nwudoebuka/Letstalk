@@ -485,7 +485,7 @@ public class Chat extends AppCompatActivity {
 //                // Great! User has recorded and saved the audio file
 //                result = I.getStringExtra("result");
 //
-//                Toast.makeText(MyChat.this,
+//                Toast.makeText(MyChatMessage.this,
 //                        "Saved: " + result,
 //                        Toast.LENGTH_LONG).show();
 //                new UploadFileAsync().execute("");
@@ -816,7 +816,7 @@ public class Chat extends AppCompatActivity {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-//                progressDialog = ProgressDialog.show(MyChat.this,"Loading Data",null,true,true);
+//                progressDialog = ProgressDialog.show(MyChatMessage.this,"Loading Data",null,true,true);
                 prog.setText("sending");
 
 

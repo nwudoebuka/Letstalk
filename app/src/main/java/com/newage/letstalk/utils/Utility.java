@@ -10,11 +10,20 @@ import android.view.inputmethod.InputMethodManager;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+
 public class Utility {
+    private static DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
+    private static DateFormat timeFormat = new SimpleDateFormat("K:mma", Locale.getDefault());
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetworkInfo = Objects.requireNonNull(connectivityManager).getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -41,4 +50,15 @@ public class Utility {
             }
         }
     }
+
+    public static String getCurrentTime() {
+        Date today = Calendar.getInstance().getTime();
+        return timeFormat.format(today);
+    }
+
+    public static String getCurrentDate() {
+        Date today = Calendar.getInstance().getTime();
+        return dateFormat.format(today);
+    }
+
 }

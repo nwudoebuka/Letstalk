@@ -126,7 +126,7 @@ public class Groupchat extends AppCompatActivity {
                 i.putExtra("phone", phone);
                 startActivity(i);
 //       Toast.makeText(getActivity().getApplicationContext(),img ,Toast.LENGTH_SHORT).show();
-//                startActivity(new Intent(getActivity().getApplicationContext(), MyChat.class));
+//                startActivity(new Intent(getActivity().getApplicationContext(), MyChatMessage.class));
 
             }
         });

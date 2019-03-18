@@ -49,4 +49,16 @@ dependencies {
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.9.9'
 
+
+    // For XMPPTCPConnection
+    implementation "org.igniterealtime.smack:smack-tcp:4.3.0"
+    // For XMPP extensions support
+    implementation "org.igniterealtime.smack:smack-android:4.3.0"
+    implementation "org.igniterealtime.smack:smack-android-extensions:4.3.0"
+
+    // For XMPP extensions support
+    implementation "org.igniterealtime.smack:smack-im:4.3.0"
+    implementation "org.igniterealtime.smack:smack-extensions:4.3.0"
+
+    //implementation "org.igniterealtime.smack:smack-java7:4.3.0"
 }
