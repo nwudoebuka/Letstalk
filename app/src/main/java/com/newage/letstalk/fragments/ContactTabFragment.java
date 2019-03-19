@@ -57,7 +57,7 @@ public class ContactTabFragment extends Fragment {
 
             }
             if(i == 2) {
-                prgmNameList[i] = "Friends Group";
+                prgmNameList[i] = "Friend Group";
 
             }
 

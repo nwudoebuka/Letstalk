@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Patterns;
 
+import com.newage.letstalk.model.Contact;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +67,7 @@ public class PhoneContactIntentService extends IntentService {
 
                         if (tempContact != null) {
                             String contactNumber = tempContact.replaceAll("[ \\-]*", "");
-                            if (Patterns.PHONE.matcher(contactNumber).matches()) {
+                            if (Patterns.PHONE.matcher(contactNumber).matches() && contactNumber.length() >= 11) {
                                 contactLists.add(new Contact(contactName, contactNumber));
                             }
                         }
@@ -81,27 +83,4 @@ public class PhoneContactIntentService extends IntentService {
         return contactLists;
     }
 
-
-    public class Contact {
-        @Nullable
-        private final String name;
-
-        @NonNull
-        private final String phoneNumber;
-
-        public Contact(@Nullable String name, @NonNull String phoneNumber) {
-            this.name = name;
-            this.phoneNumber = phoneNumber;
-        }
-
-        @Nullable
-        public String getName() {
-            return name;
-        }
-
-        @NonNull
-        public String getPhoneNumber() {
-            return phoneNumber;
-        }
-    }
 }

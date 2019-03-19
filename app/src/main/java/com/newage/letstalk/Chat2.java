@@ -441,7 +441,7 @@ public class Chat2 extends AppCompatActivity {
 
             if (resultCode == Activity.RESULT_OK) {
 
-                // Great! User has recorded and saved the audio file
+                // Great! Friend has recorded and saved the audio file
                 result = data.getStringExtra("result");
 
                 Toast.makeText(Chat2.this,
@@ -456,7 +456,7 @@ public class Chat2 extends AppCompatActivity {
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                // Oops! User has canceled the recording / back button
+                // Oops! Friend has canceled the recording / back button
             }
 
 //                    super.onActivityResult(requestCode, resultCode, data);
@@ -934,11 +934,6 @@ public class Chat2 extends AppCompatActivity {
         alenght = firstarray.first();
         Toast.makeText(Chat2.this, String.valueOf(newalenght), Toast.LENGTH_LONG).show();
     }
-
-
-
-
-
 
     public void JSON_HTTP_CALL3(){
 

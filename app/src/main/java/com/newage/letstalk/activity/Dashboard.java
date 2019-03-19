@@ -1,8 +1,11 @@
 package com.newage.letstalk.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,10 +18,16 @@ import com.newage.letstalk.PagerAdapter;
 import com.newage.letstalk.R;
 import com.newage.letstalk.SessionManager;
 import com.newage.letstalk.Sms;
+import com.newage.letstalk.activity.viewmodel.DashboardViewModel;
+import com.newage.letstalk.dataLayer.local.tables.Friend;
+
+import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;
     SessionManager session;
+
+    private DashboardViewModel viewModel;
 
     @Override
     public void onBackPressed() {
@@ -43,7 +52,9 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
         session = new SessionManager(getApplicationContext());
+        viewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -6,6 +6,8 @@ package com.newage.letstalk.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,56 +24,52 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.newage.letstalk.Chat2;
 import com.newage.letstalk.Chat3;
 import com.newage.letstalk.activity.Dashboard;
 import com.newage.letstalk.HttpParse;
 import com.newage.letstalk.R;
 import com.newage.letstalk.SessionManager;
+import com.newage.letstalk.activity.viewmodel.DashboardViewModel;
 import com.newage.letstalk.adapter.FriendListAdapter;
 import com.newage.letstalk.api.ApiInterface;
 import com.newage.letstalk.api.RetrofitService;
-import com.newage.letstalk.model.Friend;
+import com.newage.letstalk.dataLayer.local.tables.Friend;
 import com.newage.letstalk.utils.Utility;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatTabFragment extends Fragment implements FriendListAdapter.FriendClickListener {
-    FloatingActionButton chat;
+public class FriendListTabFragment extends Fragment implements FriendListAdapter.FriendClickListener {
     public int REQUESTCODE = 1;
     String finalResult;
     String HttpURL = "https://globeexservices.com/letstalk/check_contact.php";
     String HttpURLin = "https://globeexservices.com/letstalk/invite.php";
     HashMap<String, String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
-    TextView pdt;
-    LinearLayout ntf;
-    TextView ntftxt;
     SessionManager session;
-    ProgressBar progressBar;
     String phoneNumber;
 
     public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
     String[] permissions = new String[]{Manifest.permission.READ_CONTACTS};
 
+    private DashboardViewModel viewModel;
 
     @Nullable
     @Override
@@ -81,15 +79,10 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        pdt = (TextView) view.findViewById(R.id.pdt);
-        ntftxt = (TextView) view.findViewById(R.id.ntftxt);
-        ntf = (LinearLayout) view.findViewById(R.id.notify);
-        progressBar = (ProgressBar) view.findViewById(R.id.ProgressBar1);
-        chat = (FloatingActionButton) view.findViewById(R.id.fab);
-
         session = new SessionManager(getContext());
         phoneNumber = session.getPhoneNumber();
 
+        FloatingActionButton chat = view.findViewById(R.id.fab);
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,35 +99,21 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        ApiInterface api = RetrofitService.initializer();
-        Call<List<Friend>> call = api.getFriendList(phoneNumber);
-        call.enqueue(new Callback<List<Friend>>() {
+        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(DashboardViewModel.class);
+        viewModel.getFriendsList().observe(this, new Observer<List<Friend>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Friend>> call, @NonNull Response<List<Friend>> response) {
-                if (response.isSuccessful()) {
-                    List<Friend> friends = response.body();
+            public void onChanged(@Nullable List<Friend> friends) {
+                if (friends != null) {
                     mAdapter.swapItems(friends);
                 }
-            }
-
-            @Override
-            public void onFailure(Call<List<Friend>> call, Throwable t) {
-
             }
         });
     }
 
     @Override
     public void onFriendClick(Friend friend) {
-        String nam = friend.getName();
-        String phone = friend.getPhone();
-        String img = friend.getImageUrl();
-
-//        Intent i = new Intent(getContext(), Chat2.class);
         Intent i = new Intent(getContext(), Chat3.class);
-        i.putExtra("user", nam);
-        i.putExtra("img", img);
-        i.putExtra("phone", phone);
+        i.putExtra("friend", friend);
         startActivity(i);
     }
 
@@ -154,17 +133,40 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
 
                         if (IDresultHolder == 1) {
                             try (Cursor cursor2 = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + TempContactID, null, null)) {
+
+                                Set<String> contactSet = new HashSet<>(0);
+                                String name = "";
+
                                 while (cursor2 != null && cursor2.moveToNext()) {
-                                    String number = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                    String name = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                                    UserFriendCheckFunction2(number, name, phoneNumber);
+                                    String tempNumber = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                    name = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+
+                                    if (tempNumber != null) {
+                                        String contactNumber = tempNumber.replaceAll("[ \\-]*", "");
+                                        if (Patterns.PHONE.matcher(contactNumber).matches() && contactNumber.length() >= 11) {
+                                            contactSet.add(contactNumber);
+                                        }
+                                    }
                                 }
+
+                                UserFriendCheckFunction1(contactSet, name, phoneNumber);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    public void UserFriendCheckFunction1(final Set<String> contacts, final String friendName, final String userPhoneNumber) {
+        //TODO ask user tpo pick
+        if (contacts.size() > 0) {
+            for (String contact : contacts) {
+                UserFriendCheckFunction(contact, friendName, userPhoneNumber);
+            }
+        }
+
+     //   UserFriendCheckFunction("08139260647", friendName, userPhoneNumber);
     }
 
     public void UserFriendCheckFunction2(final String friendPhone, final String friendName, final String userPhoneNumber) {
@@ -191,14 +193,9 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
                     assert resp != null;
 
                     if (resp.equalsIgnoreCase("true")) {
-//                        Intent myIntent = new Intent(getActivity(), Dashboard.class);
-//                        getActivity().startActivity(myIntent);
-
-                        //TODO
-
+                        viewModel.refreshFriendList();
                         Toast.makeText(getActivity(), "Added", Toast.LENGTH_LONG).show();
                     } else if (resp.equalsIgnoreCase("he is not a user")) {
-
                         AlertDialog.Builder alert = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
                         alert.setMessage("Not a user: would you invite " + friendName + " to letstalk?");
                         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -225,7 +222,11 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
 
             @Override
             public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                if (call.isCanceled()) {
 
+                } else {
+
+                }
             }
         });
     }
@@ -288,43 +289,34 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
     }
 
 
-
-
-
-
-
-
     @Deprecated
     public void UserFriendCheckFunction(final String friendPhone, final String friendName, final String UserPhoneNumber) {
+        if (!Utility.isNetworkAvailable(Objects.requireNonNull(getContext()))) {
+            Toast.makeText(getContext(), "No internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         class UserRegisterFunctionClass extends AsyncTask<String, Void, String> {
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                pdt.setText("fetching");
             }
 
             @Override
             protected void onPostExecute(String httpResponseMsg) {
-
                 super.onPostExecute(httpResponseMsg);
 
-                pdt.setText("done!!!");
-                Toast.makeText(getActivity().getApplicationContext(), httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
-
                 if (httpResponseMsg.toString().equalsIgnoreCase("true")) {
+//                    Intent myIntent = new Intent(getActivity(), Dashboard.class);
+//                    getActivity().startActivity(myIntent);
+//                    Toast.makeText(getActivity(), "Added", Toast.LENGTH_LONG).show();
 
-                    Intent myIntent = new Intent(getActivity(), Dashboard.class);
-
-                    getActivity().startActivity(myIntent);
+                    viewModel.refreshFriendList();
                     Toast.makeText(getActivity(), "Added", Toast.LENGTH_LONG).show();
-                    //listView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
 
                 } else if (httpResponseMsg.toString().equalsIgnoreCase("he is not a user")) {
-
-                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder alert = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
                     alert.setMessage("Not a user: would you invite " + friendName + " to letstalk?");
                     alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
@@ -337,21 +329,13 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     UserRegisterFunctioninvite(friendPhone, phoneNumber, friendName);
+                                    dialog.dismiss();
                                 }
                             }
                     );
                     alert.show();
-
-                    //listView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-
-                    ntf.setVisibility(View.GONE);
-                    ntftxt.setText("not yet registered, would you like to invite" + friendName + " to letstalk?");
-
                 } else if (httpResponseMsg.toString().equalsIgnoreCase("Contact is already added")) {
-                    //listView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getActivity().getApplicationContext(), httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -367,7 +351,6 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
 
         UserRegisterFunctionClass userRegisterFunctionClass = new UserRegisterFunctionClass();
         userRegisterFunctionClass.execute(friendPhone, friendName, UserPhoneNumber);
-
     }
 
     @Deprecated
@@ -378,15 +361,11 @@ public class ChatTabFragment extends Fragment implements FriendListAdapter.Frien
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                pdt.setText("fetching");
-                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             protected void onPostExecute(String httpResponseMsg) {
                 super.onPostExecute(httpResponseMsg);
-                pdt.setText("done!!!");
-                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getContext(), httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
             }
 

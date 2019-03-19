@@ -73,7 +73,7 @@ public class CustomAdapter extends BaseAdapter{
                     context.startActivity(mIntent);
 
                 }
-                if(result[position].equalsIgnoreCase("Friends Group")){
+                if(result[position].equalsIgnoreCase("Friend Group")){
 
                     Intent mIntent = new Intent(context, Groupchat.class);
                     mIntent.putExtra("group", result[position]);

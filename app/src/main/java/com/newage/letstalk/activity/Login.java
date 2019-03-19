@@ -27,14 +27,17 @@ import com.newage.letstalk.api.ApiInterface;
 import com.newage.letstalk.api.RetrofitService;
 import com.newage.letstalk.model.request.ClearContactRequest;
 import com.newage.letstalk.model.request.LoginRequest;
+import com.newage.letstalk.utils.Utility;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.newage.letstalk.utils.Utility.isNumberValid;
+import static java.security.AccessController.getContext;
 
 public class Login extends AppCompatActivity {
     EditText Phone;
@@ -72,8 +75,8 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (checkEditTextIsEmptyOrNot()) {
-                   // UserRegisterFunction(Phone_Holder, "Null");
-                    UserLoginFunction(Phone_Holder, "Null");
+                    UserRegisterFunction(Phone_Holder, "Null");
+                   // UserLoginFunction(Phone_Holder, "Null");
                 } else {
                     Toast.makeText(Login.this, "Please fill all form fields.", Toast.LENGTH_LONG).show();
                 }
@@ -174,8 +177,13 @@ public class Login extends AppCompatActivity {
                         builder.setCancelable(false);
                         builder.show();
                     } else if (resp.equalsIgnoreCase("Matched")) {
-                        ClearContactsFunction(Phone_Holder);
+                        //ClearContactsFunction(Phone_Holder);
                         //TODO get the new contacts and send
+
+                        session.createLoginSession(Phone_Holder, Phone_Holder);
+                        startActivity(new Intent(Login.this, Dashboard.class));
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        finish();
 
                     } else if (resp.equalsIgnoreCase("Wrong verification code")) {
                         AlertDialog alertDialog = new AlertDialog.Builder(Login.this).create();
@@ -230,18 +238,17 @@ public class Login extends AppCompatActivity {
                     assert resp != null;
 
                     if (resp.equalsIgnoreCase("phone book is not registered")) {
-                        //session.createLoginSession(Phone_Holder, Phone_Holder);
+                        session.createLoginSession(Phone_Holder, Phone_Holder);
                         startActivity(new Intent(Login.this, Dashboard.class));
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         finish();
-
                     } else if (resp.equalsIgnoreCase("matched already")) {
-                        //session.createLoginSession(Phone_Holder, Phone_Holder);
+                        session.createLoginSession(Phone_Holder, Phone_Holder);
                         startActivity(new Intent(Login.this, Dashboard.class));
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         finish();
                     } else {
-                       // session.createLoginSession(Phone_Holder, Phone_Holder);
+                        session.createLoginSession(Phone_Holder, Phone_Holder);
                         startActivity(new Intent(Login.this, Dashboard.class));
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         finish();
@@ -275,13 +282,16 @@ public class Login extends AppCompatActivity {
 
     @Deprecated
     public void UserRegisterFunction(final String Phone, final String OTP) {
+        if (!Utility.isNetworkAvailable(Objects.requireNonNull(getBaseContext()))) {
+            Toast.makeText(getBaseContext(), "No internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         class UserRegisterFunctionClass extends AsyncTask<String, Void, String> {
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-
                 progressDialog = ProgressDialog.show(Login.this, "Loading Data", null, true, true);
             }
 
@@ -338,8 +348,13 @@ public class Login extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 } else if (httpResponseMsg.equalsIgnoreCase("Matched")) {
-                    UserRegisterFunctiondelete(Phone_Holder);
+                    //UserRegisterFunctiondelete(Phone_Holder);
                     //getContacts();
+
+                    session.createLoginSession(Phone_Holder, Phone_Holder);
+                    startActivity(new Intent(Login.this, Dashboard.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    finish();
                 } else if (httpResponseMsg.equalsIgnoreCase("Wrong verification code")) {
                     AlertDialog alertDialog = new AlertDialog.Builder(Login.this).create();
                     alertDialog.setTitle("Wrong OTP");
@@ -374,6 +389,10 @@ public class Login extends AppCompatActivity {
 
     @Deprecated
     public void UserRegisterFunctiondelete(final String Phone) {
+        if (!Utility.isNetworkAvailable(Objects.requireNonNull(getBaseContext()))) {
+            Toast.makeText(getBaseContext(), "No internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         class UserRegisterFunctionClassdelete extends AsyncTask<String, Void, String> {
 

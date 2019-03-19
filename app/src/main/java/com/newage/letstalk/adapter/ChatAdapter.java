@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.newage.letstalk.R;
 import com.newage.letstalk.interfaces.ChatMessage;
+import com.newage.letstalk.model.FriendChatMessage;
 import com.newage.letstalk.model.MyChatMessage;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +41,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         this.notifyDataSetChanged();
     }
 
+    public void swapItem(ChatMessage newItem) {
+        if (newItem == null) return;
+
+        if(chatTypes == null)
+            chatTypes = new ArrayList<>();
+
+        chatTypes.clear();
+        chatTypes.add(newItem);
+
+        // Force the RecyclerView to refresh
+        this.notifyDataSetChanged();
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -84,17 +97,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     public class FriendChatItemViewHolder extends ViewHolder implements View.OnClickListener {
         TextView mBubbleTextView;
+        ImageView mBubbleImageView;
 
         private FriendChatItemViewHolder(View itemView) {
             super(itemView);
             mBubbleTextView = itemView.findViewById(R.id.message_text);
+            mBubbleImageView = itemView.findViewById(R.id.message_image);
         }
 
         @Override
         public void bindType(ChatMessage item) {
-           // MyChatMessage chat = (MyChatMessage) item;
-
-           // mBubbleTextView.setText(chat.getMessage());
+            FriendChatMessage chat = (FriendChatMessage) item;
+            mBubbleTextView.setText(chat.getMessageText());
+            if(!TextUtils.isEmpty(chat.getMessageImage())) {
+                Picasso.with(mBubbleImageView.getContext())
+                        .load(chat.getMessageImage()).into(mBubbleImageView);
+            }
         }
 
         @Override
@@ -123,7 +141,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 Picasso.with(mBubbleImageView.getContext())
                         .load(chat.getMessageImage()).into(mBubbleImageView);
             }
-
         }
 
         @Override

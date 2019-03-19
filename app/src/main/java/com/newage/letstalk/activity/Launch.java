@@ -17,7 +17,7 @@ public class Launch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         session = new SessionManager(getApplicationContext());
-        Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Friend Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
 
         //session.checkLogin();
 

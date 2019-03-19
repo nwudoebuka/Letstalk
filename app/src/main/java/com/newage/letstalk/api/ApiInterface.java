@@ -1,6 +1,6 @@
 package com.newage.letstalk.api;
 
-import com.newage.letstalk.model.Friend;
+import com.newage.letstalk.dataLayer.local.tables.Friend;
 import com.newage.letstalk.model.request.CheckContactRequest;
 import com.newage.letstalk.model.request.ClearContactRequest;
 import com.newage.letstalk.model.request.LoginRequest;

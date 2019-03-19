@@ -393,7 +393,7 @@ public class Chat extends AppCompatActivity {
 
             if (resultCode == Activity.RESULT_OK) {
 
-                // Great! User has recorded and saved the audio file
+                // Great! Friend has recorded and saved the audio file
                 result = data.getStringExtra("result");
 
                 Toast.makeText(Chat.this,
@@ -409,7 +409,7 @@ public class Chat extends AppCompatActivity {
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                // Oops! User has canceled the recording / back button
+                // Oops! Friend has canceled the recording / back button
             }
 
 //                    super.onActivityResult(requestCode, resultCode, data);
@@ -482,7 +482,7 @@ public class Chat extends AppCompatActivity {
 //
 //            if (RC == Activity.RESULT_OK) {
 //
-//                // Great! User has recorded and saved the audio file
+//                // Great! Friend has recorded and saved the audio file
 //                result = I.getStringExtra("result");
 //
 //                Toast.makeText(MyChatMessage.this,
@@ -495,7 +495,7 @@ public class Chat extends AppCompatActivity {
 //
 //            }
 //            if (RC == Activity.RESULT_CANCELED) {
-//                // Oops! User has canceled the recording / back button
+//                // Oops! Friend has canceled the recording / back button
 //            }
 //        }
 //    }

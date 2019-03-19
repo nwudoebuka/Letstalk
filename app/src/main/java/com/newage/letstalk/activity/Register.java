@@ -118,7 +118,7 @@ public class Register extends AppCompatActivity {
         updateBarHandler = new Handler();
 
         session = new SessionManager(getApplicationContext());
-        Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Friend Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);

@@ -13,12 +13,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.newage.letstalk.adapter.ChatAdapter;
+import com.newage.letstalk.dataLayer.local.tables.Friend;
 import com.newage.letstalk.interfaces.ChatMessage;
 import com.newage.letstalk.model.FriendChatMessage;
 import com.newage.letstalk.model.MyChatMessage;
@@ -33,10 +37,12 @@ public class Chat3 extends AppCompatActivity {
     RecyclerView recyclerView;
     EmojiconEditText mMsgEditText;
 
-    String user, img, contactJid, nameofuser;
+    String contactJid;
+    String nameofuser;
     SessionManager session;
     String Message_Holder;
     ChatAdapter adapter;
+    Friend friend;
 
     private BroadcastReceiver mBroadcastReceiver;
 
@@ -45,25 +51,14 @@ public class Chat3 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_layout);
 
-        Intent intent = getIntent();
-        if (intent.getExtras() != null) {
-            user = intent.getStringExtra("user");
-            img = intent.getStringExtra("img");
-            contactJid = intent.getStringExtra("phone");
-        }
-
         Toolbar toolbar = findViewById(R.id.toolbar_contact);
         setSupportActionBar(toolbar);
 
         if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-        //setTitle(contactJid);
-
-        startService();
 
         recyclerView = findViewById(R.id.msgListView);
         mMsgEditText = findViewById(R.id.messageEditText);
@@ -71,6 +66,17 @@ public class Chat3 extends AppCompatActivity {
         ImageButton emoji = findViewById(R.id.emoji_btn);
         ImageButton attachment = findViewById(R.id.pick_attachment);
         ImageButton audio = findViewById(R.id.pick_audio);
+
+        LinearLayout input = findViewById(R.id.form);
+
+        Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+            friend = (Friend) intent.getSerializableExtra("friend");
+            contactJid = friend.getPhone();
+        }
+
+        //setTitle(contactJid);
+        //startService();
 
         EmojIconActions emojIcon = new EmojIconActions(this, findViewById(android.R.id.content), mMsgEditText, emoji);
         emojIcon.ShowEmojIcon();
@@ -107,6 +113,17 @@ public class Chat3 extends AppCompatActivity {
                 sendTextMessage(v);
             }
         });
+
+
+        /* if chating with bot*/
+        if(TextUtils.equals(friend.getPhone(), "bot")){
+            input.setVisibility(View.GONE);
+
+            FriendChatMessage chatMessage = new FriendChatMessage(friend.getPhone());
+            chatMessage.setMessageText("Welcome to letstalk");
+            adapter.swapItem(chatMessage);
+            recyclerView.smoothScrollToPosition(adapter.getItemCount());
+        }
     }
 
     public void sendTextMessage(View v) {
@@ -202,4 +219,54 @@ public class Chat3 extends AppCompatActivity {
         }
         return false;
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.popup_menu_chat, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id){
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+//        if (id == R.id.setautoresponse) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(Chat2.this);
+//            builder.setTitle("Auto-response");
+//            builder.setMessage("set a message as auto-responder");
+//            final EditText input = new EditText(Chat2.this);
+//            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_TEXT);
+//            input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(35)});
+//            builder.setView(input);
+//            builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    m_Text = input.getText().toString();
+//                    UserRegisterFunctionauto(nameofuser, m_Text);
+//                }
+//            });
+//            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.cancel();
+//                }
+//            });
+//            builder.setCancelable(false);
+//            builder.show();
+//            return true;
+//        }else  if (id == R.id.unsetautoresponse) {
+//           // UserRegisterFunctiondisauto(nameofuser);
+//        }
+    }
+
 }

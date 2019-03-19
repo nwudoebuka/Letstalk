@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.newage.letstalk.fragments.ChatTabFragment;
+import com.newage.letstalk.fragments.FriendListTabFragment;
 import com.newage.letstalk.fragments.ContactTabFragment;
 import com.newage.letstalk.fragments.ProfileTabFragment;
 
@@ -25,7 +25,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                ChatTabFragment tab1 = new ChatTabFragment();
+                FriendListTabFragment tab1 = new FriendListTabFragment();
                 return tab1;
             case 1:
                 ProfileTabFragment tab2 = new ProfileTabFragment();

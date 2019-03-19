@@ -17,8 +17,6 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_dp"
             android:layout_width="63dp"
@@ -66,6 +64,7 @@
         android:id="@+id/msgListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_above="@+id/form"
         android:divider="@null"
         android:dividerHeight="0dp"
