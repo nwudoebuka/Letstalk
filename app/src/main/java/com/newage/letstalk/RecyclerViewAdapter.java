@@ -5,7 +5,7 @@ package com.newage.letstalk;
  */
 
 import android.graphics.Color;
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -18,18 +18,12 @@ import com.android.volley.toolbox.NetworkImageView;
  * Created by Juned on 2/8/2017.
  */
 
-import java.util.HashMap;
 import java.util.List;
 import com.android.volley.toolbox.ImageLoader;
-import com.squareup.picasso.Picasso;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.widget.Toast;
-
-import de.hdodenhof.circleimageview.*;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     public  int HEADER_VIEW = 3;

@@ -34,12 +34,12 @@
 
 
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_height="wrap_content" android:layout_width="fill_parent">
 
                     <EditText android:id="@+id/phone_login" android:nextFocusUp="@id/phone_login"
                         android:nextFocusLeft="@id/phone_login" android:gravity="bottom" android:imeOptions="actionNext"  android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/prompt_phone" android:maxLines="1"  android:inputType="number"   android:imeActionId="@+id/login" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
 
             </LinearLayout>

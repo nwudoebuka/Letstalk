@@ -15,7 +15,7 @@ import com.android.volley.toolbox.DiskBasedCache;
  */
 
 import com.android.volley.Cache;
-import android.support.v4.util.LruCache;
+import androidx.collection.LruCache;
 import com.android.volley.Network;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HurlStack;

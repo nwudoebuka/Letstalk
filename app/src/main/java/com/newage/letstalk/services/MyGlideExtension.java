@@ -1,9 +1,6 @@
 package com.newage.letstalk.services;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
-
+import androidx.annotation.NonNull;
 
 
 //@GlideExtension

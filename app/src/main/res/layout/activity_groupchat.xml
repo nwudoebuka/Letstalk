@@ -8,7 +8,7 @@
     android:background="@color/dividerColor"
     tools:context=".Groupchat">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:text="usernumber"
             android:visibility="gone"/>
         <!--</LinearLayout>-->
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <ProgressBar
         android:id="@+id/ProgressBar1"
@@ -71,7 +71,7 @@
         android:text="progress"
         android:visibility="gone"/>
     <!--app:backgroundTint="@color/spg_rosa"-->
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

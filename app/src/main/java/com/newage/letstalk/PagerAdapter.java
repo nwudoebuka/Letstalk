@@ -4,9 +4,9 @@ package com.newage.letstalk;
  * Created by Newage_android on 5/3/2018.
  */
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.newage.letstalk.fragments.FriendListTabFragment;
 import com.newage.letstalk.fragments.ContactTabFragment;

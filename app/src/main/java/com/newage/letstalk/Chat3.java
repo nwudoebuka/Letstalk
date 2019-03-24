@@ -1,7 +1,6 @@
 package com.newage.letstalk;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,19 +9,20 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -30,25 +30,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.features.ReturnMode;
+import com.esafirm.imagepicker.model.Image;
 import com.newage.letstalk.activity.AttachmentView;
 import com.newage.letstalk.adapter.ChatAdapter;
 import com.newage.letstalk.dataLayer.local.tables.Friend;
-import com.newage.letstalk.interfaces.ChatMessage;
 import com.newage.letstalk.model.FriendChatMessage;
 import com.newage.letstalk.model.MyChatMessage;
 //import com.newage.letstalk.utils.ImagePicker;
 import com.newage.letstalk.xmpp.XmppConnection;
 import com.newage.letstalk.xmpp.XmppConnectionService;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,7 +84,7 @@ public class Chat3 extends AppCompatActivity {
     private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
 
-    //private ArrayList<Image> images = new ArrayList<>();
+    private ArrayList<Image> images = new ArrayList<>();
 
     ImageButton emoji;
     ImageButton attachment;
@@ -197,7 +196,7 @@ public class Chat3 extends AppCompatActivity {
         adapter = new ChatAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         linearLayoutManager.setStackFromEnd(true);
         //linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -300,11 +299,14 @@ public class Chat3 extends AppCompatActivity {
         }
     }
 
-    public void sendImageMessage(String caption, String imageUri, Bitmap bitmap) {
+    public void sendImageMessage(String caption, List<Image> images) {
         MyChatMessage chat = new MyChatMessage();
         chat.setMessageText(caption);
-        chat.setBitmap(bitmap);
-        chat.setMessageImage(imageUri);
+        chat.setMessageImage(images.get(0).getPath());
+
+//        chat.setBitmap(bitmap);
+//        chat.setMessageImage(imageUri);
+
         adapter.addItem(chat);
         recyclerView.smoothScrollToPosition(adapter.getItemCount());
     }
@@ -458,18 +460,29 @@ public class Chat3 extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-       // if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
-       //     images = (ArrayList<Image>) ImagePicker.getImages(data);
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            images = (ArrayList<Image>) ImagePicker.getImages(data);
 
-            //Intent intent = new Intent(getBaseContext(), AttachmentView.class);
-            //intent.putExtra("hello", "hello");
-            //intent.putExtra("imageArray", byteArray);
-            //intent.putExtra("image", images.get(0));
-            //startActivityForResult(intent, 123);
+//            Intent intent = new Intent(getBaseContext(), AttachmentView.class);
+//            intent.putExtra("hello", "hello");
+//            intent.putExtra("imageArray", byteArray);
+//            intent.putExtra("image", images.get(0));
+//            startActivityForResult(intent, 123);
 
-       //     AttachmentView.start(this, images);
-       //     return;
-       // }
+            Intent intent = new Intent(this, AttachmentView.class);
+            intent.putParcelableArrayListExtra("images", (ArrayList<? extends Parcelable>) images);
+            startActivityForResult(intent, 123);
+            return;
+        }
+
+        if (requestCode == 123 && data != null) {
+
+            List<Image> images = data.getParcelableArrayListExtra("images");
+            String caption = data.getStringExtra("message");
+            sendImageMessage(caption, images);
+            return;
+        }
+
 
 
 //        if (resultCode == Activity.RESULT_OK) {
@@ -500,46 +513,45 @@ public class Chat3 extends AppCompatActivity {
     }
 
     private void pickImage() {
-        final boolean returnAfterCapture = true;
-        final boolean isSingleMode = true;
+        final boolean isSingleMode = false;
         final boolean useCustomImageLoader = true;
         final boolean folderMode = true;
         final boolean includeVideo = true;
         final boolean isExclude = true;
 
-//        ImagePicker imagePicker = ImagePicker.create(this)
-//                .language("in") // Set image picker language
-////                .theme(R.style.ImagePickerTheme)
-//                .returnMode(returnAfterCapture ? ReturnMode.ALL : ReturnMode.NONE) // set whether pick action or camera action should return immediate result or not. Only works in single mode for image picker
-//                .folderMode(folderMode) // set folder mode (false by default)
-//                .includeVideo(includeVideo) // include video (false by default)
-//                .toolbarArrowColor(Color.RED) // set toolbar arrow up color
-//                .toolbarFolderTitle("Folder") // folder selection title
-//                .toolbarImageTitle("Tap to select") // image selection title
-//                .toolbarDoneButtonText("DONE"); // done button text
-//
-//        if (useCustomImageLoader) {
-////            imagePicker.imageLoader(new GrayscaleImageLoader());
-//        }
-//
-//        if (isSingleMode) {
-////            imagePicker.single();
-//        } else {
-////            imagePicker.multi(); // multi mode (default mode)
-//        }
-//
-//        if (isExclude) {
-////            imagePicker.exclude(images); // don't show anything on this selected images
-//        } else {
-////            imagePicker.origin(images); // original selected images, used in multi mode
-//        }
-//
-//        imagePicker.limit(10) // max images can be selected (99 by default)
-//                .showCamera(true) // show camera or not (true by default)
-//                .imageDirectory("Camera")   // captured image directory name ("Camera" folder by default)
-//                .imageFullDirectory(Environment.getExternalStorageDirectory().getPath()); // can be full path
-//
-//        imagePicker.start();
+        ImagePicker imagePicker = ImagePicker.create(this)
+                .language("in") // Set image picker language
+                //.theme(R.style.ImagePickerTheme)
+                .returnMode(ReturnMode.ALL) // set whether pick action or camera action should return immediate result or not. Only works in single mode for image picker
+                .folderMode(folderMode) // set folder mode (false by default)
+                .includeVideo(includeVideo) // include video (false by default)
+                .toolbarArrowColor(Color.WHITE) // set toolbar arrow up color
+                .toolbarFolderTitle("Send to" + contactJid) // folder selection title
+                .toolbarImageTitle("Tap to select") // image selection title
+                .toolbarDoneButtonText("DONE"); // done button text
+
+        if (useCustomImageLoader) {
+//            imagePicker.imageLoader(new GrayscaleImageLoader());
+        }
+
+        if (isSingleMode) {
+            imagePicker.single();
+        } else {
+            imagePicker.multi(); // multi mode (default mode)
+        }
+
+        if (isExclude) {
+            imagePicker.exclude(images); // don't show anything on this selected images
+        } else {
+            imagePicker.origin(images); // original selected images, used in multi mode
+        }
+
+        imagePicker.limit(10) // max images can be selected (99 by default)
+                .showCamera(true) // show camera or not (true by default)
+                .imageDirectory("Camera")   // captured image directory name ("Camera" folder by default)
+                .imageFullDirectory(Environment.getExternalStorageDirectory().getPath()); // can be full path
+
+        imagePicker.start();
     }
 
 

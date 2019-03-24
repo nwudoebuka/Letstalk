@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Sms">
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             tools:layout_editor_absoluteY="-81dp" />
 
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
     <ScrollView android:id="@+id/register_form" android:layout_width="match_parent" android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize">
 
@@ -82,12 +82,12 @@
 
 
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_height="wrap_content" android:layout_width="fill_parent">
 
                     <EditText android:id="@+id/msg" android:nextFocusUp="@id/phone_register"
                         android:nextFocusLeft="@id/phone_register" android:maxLength="100" android:gravity="bottom" android:imeOptions="actionNext"  android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Message" android:maxLines="1"  android:inputType="textPersonName"   android:imeActionId="@+id/login" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
 
             </LinearLayout>

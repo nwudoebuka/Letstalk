@@ -1,15 +1,15 @@
 package com.newage.letstalk.activity;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -19,9 +19,6 @@ import com.newage.letstalk.R;
 import com.newage.letstalk.SessionManager;
 import com.newage.letstalk.Sms;
 import com.newage.letstalk.activity.viewmodel.DashboardViewModel;
-import com.newage.letstalk.dataLayer.local.tables.Friend;
-
-import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;

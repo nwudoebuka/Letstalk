@@ -3,9 +3,9 @@ package com.newage.letstalk.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -37,7 +37,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.newage.letstalk.utils.Utility.isNumberValid;
-import static java.security.AccessController.getContext;
 
 public class Login extends AppCompatActivity {
     EditText Phone;

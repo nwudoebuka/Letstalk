@@ -1,16 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
-
     <item
         android:id="@+id/invite"
         android:title="Invite a friend"/>
-
     <item
         android:id="@+id/refresh"
         android:title="Refresh contact"/>
-
     <item
         android:id="@+id/log_out"
         android:title="Logout"/>
-
 </menu>

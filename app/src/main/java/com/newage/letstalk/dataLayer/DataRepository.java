@@ -1,10 +1,10 @@
 package com.newage.letstalk.dataLayer;
 
 import android.annotation.SuppressLint;
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.newage.letstalk.api.ApiInterface;
@@ -12,7 +12,6 @@ import com.newage.letstalk.api.RetrofitService;
 import com.newage.letstalk.dataLayer.local.AppDatabase;
 import com.newage.letstalk.dataLayer.local.tables.Friend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;

@@ -3,16 +3,14 @@ package com.newage.letstalk;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import org.json.JSONArray;
 
@@ -25,20 +23,16 @@ import com.android.volley.toolbox.Volley;
 import java.util.HashMap;
 import java.util.List;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import de.hdodenhof.circleimageview.*;
 
 @Deprecated
 public class Contacts extends AppCompatActivity {

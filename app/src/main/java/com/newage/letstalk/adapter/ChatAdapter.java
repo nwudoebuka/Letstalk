@@ -3,8 +3,8 @@ package com.newage.letstalk.adapter;
 import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.newage.letstalk.R;
 import com.newage.letstalk.interfaces.ChatMessage;
 import com.newage.letstalk.model.FriendChatMessage;
@@ -169,13 +170,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
             if(!TextUtils.isEmpty(chat.getMessageImage())) {
                 mMessageImageView.setVisibility(View.VISIBLE);
+
+                Glide.with(mMessageImageView).load(chat.getMessageImage()).into(mMessageImageView);
+
 //                GlideApp.with(mMessageImageView.getContext()).load(chat.getMessageImage())
-//                        .placeholder(R.drawable.ic_image_placeholder)
-//                        .error(R.drawable.ic_broken_image)
-//                        .into(mMessageImageView);
-            }else if(chat.getBitmap() != null){
-                mMessageImageView.setVisibility(View.VISIBLE);
-//                GlideApp.with(mMessageImageView.getContext()).load(chat.getBitmap())
 //                        .placeholder(R.drawable.ic_image_placeholder)
 //                        .error(R.drawable.ic_broken_image)
 //                        .into(mMessageImageView);
