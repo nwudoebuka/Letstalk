@@ -15,6 +15,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+@Deprecated
 public class CustomAdapter extends BaseAdapter{
     String [] result;
     String grpname;
@@ -22,13 +24,13 @@ public class CustomAdapter extends BaseAdapter{
     DataAdapter dataadapter;
     int [] imageId;
     private static LayoutInflater inflater=null;
+
     public CustomAdapter(Activity mainActivity, String[] prgmNameList, int[] prgmImages) {
         // TODO Auto-generated constructor stub
         result=prgmNameList;
         context=mainActivity;
         imageId=prgmImages;
-        inflater = ( LayoutInflater )context.
-                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     @Override
     public int getCount() {
@@ -58,7 +60,7 @@ public class CustomAdapter extends BaseAdapter{
         // TODO Auto-generated method stub
         Holder holder=new Holder();
         View rowView;
-        rowView = inflater.inflate(R.layout.list_row, null);
+        rowView = inflater.inflate(R.layout.single_group, null);
         holder.tv=(TextView) rowView.findViewById(R.id.textView1);
         holder.img=(ImageView) rowView.findViewById(R.id.profile_image);
         holder.tv.setText(result[position]);

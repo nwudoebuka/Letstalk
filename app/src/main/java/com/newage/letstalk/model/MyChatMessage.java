@@ -1,5 +1,7 @@
 package com.newage.letstalk.model;
 
+import android.graphics.Bitmap;
+
 import com.newage.letstalk.interfaces.ChatMessage;
 import com.newage.letstalk.utils.Utility;
 
@@ -10,6 +12,7 @@ public class MyChatMessage implements ChatMessage {
     private String messageImage;
     private String messageAudio;
     private String messageVideo;
+    private Bitmap bitmap;
 
     public MyChatMessage() {
         this.date = Utility.getCurrentDate();
@@ -23,6 +26,9 @@ public class MyChatMessage implements ChatMessage {
         this.sender = sender;
     }
 
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
 
     public void setMessageText(String messageText) {
         this.messageText = messageText;
@@ -66,6 +72,10 @@ public class MyChatMessage implements ChatMessage {
 
     public String getMessageVideo() {
         return messageVideo;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
     @Override

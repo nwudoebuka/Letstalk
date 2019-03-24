@@ -13,11 +13,14 @@ public class SessionManager {
     SharedPreferences pref;
     Context _context;
     int PRIVATE_MODE = 0;
+
     private static final String PREF_NAME = "AndroidHivePref";
 
     private static final String IS_LOGIN = "IsLoggedIn";
     public static final String KEY_NAME = "name";
     public static final String KEY_PHONE = "phone";
+    public static final String KEY_USER_STATUS = "user_status";
+
 
     // Constructor
     public SessionManager(Context context){
@@ -101,8 +104,20 @@ public class SessionManager {
         pref.edit().putBoolean(IS_LOGIN, value).apply();
     }
 
+
     public String getPhoneNumber(){
         return pref.getString(KEY_PHONE, "");
     }
+
+    public String getUserName(){
+        return pref.getString(KEY_NAME, "");
+    }
+
+
+    public String getUserStatus(){
+        return pref.getString(KEY_USER_STATUS, "Available");
+    }
+
+    public void setUserSatus(String value){ pref.edit().putString(KEY_USER_STATUS, value).apply(); }
 
 }

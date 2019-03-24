@@ -26,6 +26,8 @@ import java.io.InputStream;
 /**
  * Created by Aluu on 6/6/2018.
  */
+
+@Deprecated
 public class CustomListView extends ArrayAdapter<String> {
 
     private String[] id;

@@ -5,17 +5,15 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
+
+@Deprecated
 public class CustomTimerTask extends TimerTask {
-
-
     private Context context;
     private Handler mHandler = new Handler();
 
     public CustomTimerTask(Context con) {
         this.context = con;
     }
-
-
 
     @Override
     public void run() {
@@ -26,7 +24,6 @@ public class CustomTimerTask extends TimerTask {
                 mHandler.post(new Runnable() {
                     public void run() {
                         Toast.makeText(context, "DISPLAY YOUR MESSAGE", Toast.LENGTH_SHORT).show();
-
                     }
                 });
             }

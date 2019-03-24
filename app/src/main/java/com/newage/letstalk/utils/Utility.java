@@ -1,9 +1,13 @@
 package com.newage.letstalk.utils;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -12,14 +16,17 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 public class Utility {
     private static DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
     private static DateFormat timeFormat = new SimpleDateFormat("K:mma", Locale.getDefault());
+
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -60,5 +67,6 @@ public class Utility {
         Date today = Calendar.getInstance().getTime();
         return dateFormat.format(today);
     }
+
 
 }

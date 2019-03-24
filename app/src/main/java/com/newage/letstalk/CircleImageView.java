@@ -21,6 +21,8 @@ import android.util.AttributeSet;
 
 import com.android.volley.toolbox.NetworkImageView;
 
+
+@Deprecated
 public class CircleImageView extends NetworkImageView {
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;

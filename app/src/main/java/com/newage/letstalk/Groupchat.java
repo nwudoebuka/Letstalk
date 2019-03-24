@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newage.letstalk.model.Group;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,20 +34,13 @@ import java.net.URL;
 import java.util.HashMap;
 
 public class Groupchat extends AppCompatActivity {
-    public int REQUESTCODE = 1;
-    TextView groupname;
-    DataAdapter dataadapter;
-    CustomAdapter customadapter;
-    String getname,replacenamespace, nameofuser;
-    FloatingActionButton add;
+    String getname;
     ProgressBar progressBar;
     SessionManager session;
     String HttpURL = "https://globeexservices.com/letstalk/groups.php";
     HashMap<String,String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
-    String finalResult;
     String HttpURLin = "https://globeexservices.com/letstalk/invite.php";
-    public static String urladdress = "";
     TextView pdt;
     BufferedInputStream is;
     public static Boolean loadedurl;
@@ -55,63 +50,66 @@ public class Groupchat extends AppCompatActivity {
     String[] name;
     String[] email;
     String[] imagepath;
-    ListView listView;
+
+
+    String phoneNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groupchat);
-        Intent i = getIntent();
-        groupname = (TextView)findViewById(R.id.user);
-        pdt = (TextView)findViewById(R.id.pdt);
-        getname = i.getStringExtra("group");
-        replacenamespace = getname.replace(" ","_");
-        Toast.makeText(Groupchat.this,replacenamespace,Toast.LENGTH_SHORT).show();
 
-        groupname.setText(getname);
-        session = new SessionManager(this);
-        HashMap<String, String> user = session.getUserDetails();
+        TextView groupname = (TextView) findViewById(R.id.user);
+        pdt = (TextView) findViewById(R.id.pdt);
+        progressBar = (ProgressBar) findViewById(R.id.ProgressBar1);
+        FloatingActionButton add = (FloatingActionButton) findViewById(R.id.fab);
 
-        // name
-        nameofuser = user.get(SessionManager.KEY_NAME);
-        urladdress = "https://globeexservices.com/letstalk/group_contact.php/?user="+nameofuser+"&group="+replacenamespace+"";
-        progressBar = (ProgressBar)findViewById(R.id.ProgressBar1);
-        add = (FloatingActionButton)findViewById(R.id.fab);
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                ntf.setVisibility(View.GONE);
-//                list.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                // TODO Auto-generated method stub
-
-                // using Intent for fetching contacts from phone-book
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-                startActivityForResult(intent, REQUESTCODE);
-
-
-            }
-        });
-        setTitle("");
-//        groupname.setText(dataadapter.getgroupname());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+
+        Intent intent = getIntent();
+        if(intent.getExtras() != null){
+            Group group = (Group) intent.getSerializableExtra("group");
+            getname = group.getName();
+        }
+
+        String replacenamespace = getname.replace(" ","_");
+        Toast.makeText(Groupchat.this,replacenamespace,Toast.LENGTH_SHORT).show();
+
+        groupname.setText(getname);
+
+        session = new SessionManager(this);
+        phoneNumber = session.getPhoneNumber();
+
+        String urladdress = "https://globeexservices.com/letstalk/group_contact.php/?user="+phoneNumber+"&group="+replacenamespace+"";
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                finish();
+            public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                // using Intent for fetching contacts from phone-book
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                startActivityForResult(intent, 1);
             }
         });
 
+        setTitle("");
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-
-
-        listView = (ListView)findViewById(R.id.lview);
+        ListView listView = (ListView)findViewById(R.id.lview);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -125,15 +123,12 @@ public class Groupchat extends AppCompatActivity {
                 i.putExtra("img", img);
                 i.putExtra("phone", phone);
                 startActivity(i);
-//       Toast.makeText(getActivity().getApplicationContext(),img ,Toast.LENGTH_SHORT).show();
-//                startActivity(new Intent(getActivity().getApplicationContext(), MyChatMessage.class));
-
             }
         });
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
         this.loadedurl = false;
-        collectData();
+        collectData(urladdress);
 
         if(this.loadedurl == true) {
             CustomListView customListView = new CustomListView(Groupchat.this, name, email, imagepath);
@@ -179,16 +174,13 @@ public class Groupchat extends AppCompatActivity {
     }
 
     public void showSelectedNumber(String name, String number, int type) {
-//        TextView userNumber = (TextView) findViewById(R.id.textViewc2);
-        String typeNumber = (String) ContactsContract.CommonDataKinds.Phone
-                .getTypeLabel(getResources(), type, "");
-//        userNumber.setText(name + ": " + number + " " + typeNumber);
-
-        UserRegisterFunction(number,name,nameofuser,getname);
+        String typeNumber = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(getResources(), type, "");
+        UserRegisterFunction(number,name,phoneNumber, getname);
         Toast.makeText(this, number, Toast.LENGTH_SHORT).show();
     }
 
-//sending phone to php webservice
+
+    //sending phone to php webservice
     public void UserRegisterFunction(final String Phonec,final String Namec,final String Username, final String Groupname){
 
         class UserRegisterFunctionClass extends AsyncTask<String,Void,String> {
@@ -230,7 +222,7 @@ public class Groupchat extends AppCompatActivity {
                     alert.setPositiveButton("Invite", new DialogInterface.OnClickListener(){
                                 @Override
                                 public void onClick(DialogInterface dialog,int which){
-                                    UserRegisterFunctioninvite(Phonec,nameofuser,Namec);
+                                    UserRegisterFunctioninvite(Phonec,phoneNumber,Namec);
 
                                 }
                             }
@@ -255,9 +247,7 @@ public class Groupchat extends AppCompatActivity {
                 hashMap.put("name",params[1]);
                 hashMap.put("userid",params[2]);
                 hashMap.put("groupname",params[3]);
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-
-                return finalResult;
+                return httpParse.postRequest(hashMap, HttpURL);
             }
         }
 
@@ -299,9 +289,7 @@ public class Groupchat extends AppCompatActivity {
                 hashMap.put("phonein",params[0]);
                 hashMap.put("nameofsender",params[1]);
                 hashMap.put("nameoff",params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURLin);
-
-                return finalResult;
+                return  httpParse.postRequest(hashMap, HttpURLin);
             }
         }
 
@@ -311,7 +299,7 @@ public class Groupchat extends AppCompatActivity {
     }
 
 
-    public void collectData() {
+    public void collectData(String urladdress) {
         try {
             URL url = new URL(urladdress);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -322,12 +310,7 @@ public class Groupchat extends AppCompatActivity {
             ex.printStackTrace();
             this.loadedurl = false;
             Toast.makeText(Groupchat.this,"ehn no work",Toast.LENGTH_SHORT).show();
-
-
-
         }
-
-        //Content
 
         try{
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -359,19 +342,10 @@ public class Groupchat extends AppCompatActivity {
                 email[i] = jo.getString("phone");
                 imagepath[i] = jo.getString("dp");
             }
-
-
         }catch (Exception ex){
 
             ex.printStackTrace();
 
         }
     }
-
-
-
-
-
-
-
 }

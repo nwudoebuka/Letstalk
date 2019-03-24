@@ -47,10 +47,7 @@ public class AudioRecordActivity extends AppCompatActivity {
 
                 if(checkPermission()) {
 
-                    AudioSavePathInDevice =
-                            Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
-                                    CreateRandomAudioFileName(5) + "AudioRecording.3gp";
-
+                    AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + CreateRandomAudioFileName(5) + "AudioRecording.3gp";
                     MediaRecorderReady();
 
                     try {
@@ -67,8 +64,7 @@ public class AudioRecordActivity extends AppCompatActivity {
                     buttonStart.setEnabled(false);
                     buttonStop.setEnabled(true);
 
-                    Toast.makeText(AudioRecordActivity.this, "Recording started",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(AudioRecordActivity.this, "Recording started", Toast.LENGTH_LONG).show();
                 } else {
                     requestPermission();
                 }
@@ -116,14 +112,17 @@ public class AudioRecordActivity extends AppCompatActivity {
         return stringBuilder.toString();
     }
 
+
+
+
+
     private void requestPermission() {
         ActivityCompat.requestPermissions(AudioRecordActivity.this, new
                 String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case RequestPermissionCode:
                 if (grantResults.length> 0) {
@@ -144,12 +143,9 @@ public class AudioRecordActivity extends AppCompatActivity {
     }
 
     public boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
-                WRITE_EXTERNAL_STORAGE);
-        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
-                RECORD_AUDIO);
-        return result == PackageManager.PERMISSION_GRANTED &&
-                result1 == PackageManager.PERMISSION_GRANTED;
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
     }
 
 

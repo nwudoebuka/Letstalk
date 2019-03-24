@@ -13,27 +13,34 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
 import org.json.JSONArray;
+
 import java.util.ArrayList;
+
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.HashMap;
 import java.util.List;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.hdodenhof.circleimageview.*;
 
+@Deprecated
 public class Contacts extends AppCompatActivity {
 
     ImageButton add;
@@ -41,19 +48,19 @@ public class Contacts extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
-   private static String HTTP_JSON_URL = "";
+    private static String HTTP_JSON_URL = "";
 
     String Image_Name_JSON = "name";
 
-    String Image_URL_JSON = "dp",user;
+    String Image_URL_JSON = "dp", user;
 
-    JsonArrayRequest RequestOfJSonArray ;
+    JsonArrayRequest RequestOfJSonArray;
 
-    RequestQueue requestQueue ;
+    RequestQueue requestQueue;
 
-    View view ;
+    View view;
     SessionManager session;
-    int RecyclerViewItemPosition ;
+    int RecyclerViewItemPosition;
 
     RecyclerView.LayoutManager layoutManagerOfrecyclerView;
 
@@ -62,11 +69,13 @@ public class Contacts extends AppCompatActivity {
     ArrayList<String> ImageTitleNameArrayListForClick;
 
     ProgressDialog progressDialog;
+
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,8 +93,9 @@ public class Contacts extends AppCompatActivity {
 //        session.checkLogin();
         HashMap<String, String> user = session.getUserDetails();
         final String nameofuser = user.get(SessionManager.KEY_NAME);
-        HTTP_JSON_URL = "https://globeexservices.com/letstalk/sync.php/?user="+nameofuser+"";
-        Toast.makeText(Contacts.this, HTTP_JSON_URL, Toast.LENGTH_LONG).show();
+        HTTP_JSON_URL = "https://globeexservices.com/letstalk/sync.php/?user=" + nameofuser + "";
+
+        Toast.makeText(this, HTTP_JSON_URL, Toast.LENGTH_LONG).show();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact);
         setSupportActionBar(toolbar);
@@ -120,26 +130,28 @@ public class Contacts extends AppCompatActivity {
         // Implementing Click Listener on RecyclerView.
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
 
-            GestureDetector gestureDetector = new GestureDetector(Contacts.this, new GestureDetector.SimpleOnGestureListener() {
+            GestureDetector gestureDetector = new GestureDetector(getBaseContext(), new GestureDetector.SimpleOnGestureListener() {
 
-                @Override public boolean onSingleTapUp(MotionEvent motionEvent) {
+                @Override
+                public boolean onSingleTapUp(MotionEvent motionEvent) {
 
                     return true;
                 }
 
             });
+
             @Override
             public boolean onInterceptTouchEvent(RecyclerView Recyclerview, MotionEvent motionEvent) {
 
                 view = Recyclerview.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
 
-                if(view != null && gestureDetector.onTouchEvent(motionEvent)) {
+                if (view != null && gestureDetector.onTouchEvent(motionEvent)) {
 
                     //Getting RecyclerView Clicked Item value.
                     RecyclerViewItemPosition = Recyclerview.getChildAdapterPosition(view);
 
                     // Showing RecyclerView Clicked Item value using Toast.
-                    Toast.makeText(Contacts.this, ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), ImageTitleNameArrayListForClick.get(RecyclerViewItemPosition), Toast.LENGTH_LONG).show();
                 }
 
                 return false;
@@ -155,7 +167,6 @@ public class Contacts extends AppCompatActivity {
 
             }
         });
-
 
 
     }
@@ -180,8 +191,7 @@ public class Contacts extends AppCompatActivity {
 //            startActivity(new Intent(Dashboard.this, Sms.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             return true;
-        }else if(id == R.id.log_out){
-
+        } else if (id == R.id.log_out) {
 
 
         }
@@ -190,9 +200,8 @@ public class Contacts extends AppCompatActivity {
     }
 
 
-
-    public void JSON_HTTP_CALL(){
-       progressDialog = ProgressDialog.show(Contacts.this,"Connecting...",null,true,true);
+    public void JSON_HTTP_CALL() {
+        progressDialog = ProgressDialog.show(getBaseContext(), "Connecting...", null, true, true);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
         RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL,
@@ -209,19 +218,17 @@ public class Contacts extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
-                        Toast.makeText(Contacts.this, "something went wrong", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), "something went wrong", Toast.LENGTH_LONG).show();
                     }
                 });
 
-        requestQueue = Volley.newRequestQueue(Contacts.this);
-
-
+        requestQueue = Volley.newRequestQueue(getBaseContext());
         requestQueue.add(RequestOfJSonArray);
     }
 
-    public void ParseJSonResponse(JSONArray array){
+    public void ParseJSonResponse(JSONArray array) {
 
-        for(int i = 0; i<array.length(); i++) {
+        for (int i = 0; i < array.length(); i++) {
 
             DataAdapter GetDataAdapter2 = new DataAdapter();
 

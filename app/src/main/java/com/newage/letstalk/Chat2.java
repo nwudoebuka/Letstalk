@@ -266,6 +266,8 @@ public class Chat2 extends AppCompatActivity {
             }
 
         });
+
+
         isimage = false;
 //        image.setVisibility(View.GONE);
 
