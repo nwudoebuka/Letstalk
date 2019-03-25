@@ -10,7 +10,9 @@ import android.util.Log;
 import com.newage.letstalk.api.ApiInterface;
 import com.newage.letstalk.api.RetrofitService;
 import com.newage.letstalk.dataLayer.local.AppDatabase;
-import com.newage.letstalk.dataLayer.local.tables.Friend;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
+import com.newage.letstalk.dataLayer.local.tables.Messages;
+import com.newage.letstalk.interfaces.ChatMessage;
 
 import java.util.List;
 
@@ -26,12 +28,12 @@ public class DataRepository {
     }
 
 
-    public LiveData<Friend> getFriend(String id) {
+    public LiveData<ChatList> getFriend(String id) {
         return database.getFriendDAO().getFriendByIdLive(id);
     }
 
-    public LiveData<List<Friend>> getFriends(String phoneNumber) {
-        LiveData<List<Friend>> list = database.getFriendDAO().getFriendsLive();
+    public LiveData<List<ChatList>> getFriends(String phoneNumber) {
+        LiveData<List<ChatList>> list = database.getFriendDAO().getFriendsLive();
 
         if(list.getValue() == null){
             refreshFriendList(phoneNumber);
@@ -40,8 +42,14 @@ public class DataRepository {
         return list;
     }
 
+    public LiveData<List<Messages>> getMessages(String remoteId) {
+        LiveData<List<Messages>> list = database.getMessageDAO().getItemsLive(remoteId);
+        //if(list.getValue() == null){ refreshFriendList(phoneNumber); }
+        return list;
+    }
+
     @SuppressLint("StaticFieldLeak")
-    public void insertFriend(final Friend friend) {
+    public void insertFriend(final ChatList friend) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -52,7 +60,18 @@ public class DataRepository {
     }
 
     @SuppressLint("StaticFieldLeak")
-    public void insertFriends(final List<Friend> friends) {
+    public void insertMessage(final Messages message) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                database.getMessageDAO().insertItem(message);
+                return null;
+            }
+        }.execute();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public void insertFriends(final List<ChatList> friends) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -63,12 +82,12 @@ public class DataRepository {
     }
 
     @SuppressLint("StaticFieldLeak")
-    public void updateFriend(final Friend friend) {
+    public void updateFriend(final ChatList chatList) {
         //note.setModifiedAt(AppUtils.getCurrentDateTime());
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                database.getFriendDAO().updateFriend(friend);
+                database.getFriendDAO().updateFriend(chatList);
                 return null;
             }
         }.execute();
@@ -76,7 +95,7 @@ public class DataRepository {
 
     @SuppressLint("StaticFieldLeak")
     public void deleteFriend(final String id) {
-        final LiveData<Friend> friend = getFriend(id);
+        final LiveData<ChatList> friend = getFriend(id);
 
         if (friend != null) {
             new AsyncTask<Void, Void, Void>() {
@@ -102,18 +121,18 @@ public class DataRepository {
 
     public void refreshFriendList(String phoneNumber){
         ApiInterface api = RetrofitService.initializer();
-        Call<List<Friend>> call = api.getFriendList(phoneNumber);
-        call.enqueue(new Callback<List<Friend>>() {
+        Call<List<ChatList>> call = api.getFriendList(phoneNumber);
+        call.enqueue(new Callback<List<ChatList>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Friend>> call, @NonNull Response<List<Friend>> response) {
+            public void onResponse(@NonNull Call<List<ChatList>> call, @NonNull Response<List<ChatList>> response) {
                 if (response.isSuccessful()) {
-                      List<Friend> friends = response.body();
-                      insertFriends(friends);
+                      List<ChatList> chatLists = response.body();
+                      insertFriends(chatLists);
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Friend>> call,@NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<ChatList>> call, @NonNull Throwable t) {
                 if(call.isCanceled()){
                     Log.e("DataRespository", "Call was canceled");
                 }else {

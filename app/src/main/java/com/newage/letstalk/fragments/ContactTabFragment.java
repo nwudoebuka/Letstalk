@@ -36,7 +36,7 @@ public class ContactTabFragment extends Fragment implements GroupListAdapter.Gro
         List<Group> groups = new ArrayList<>();
         groups.add(new Group(R.drawable.group, "Religion Group"));
         groups.add(new Group(R.drawable.group, "Family Group"));
-        groups.add(new Group(R.drawable.group, "Friend Group"));
+        groups.add(new Group(R.drawable.group, "ChatList Group"));
         groups.add(new Group(R.drawable.group, "Business Group"));
 
         final GroupListAdapter mAdapter = new GroupListAdapter(this);

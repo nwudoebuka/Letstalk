@@ -1,8 +1,5 @@
 package com.newage.letstalk.services;
 
-import androidx.annotation.NonNull;
-
-
 //@GlideExtension
 public class MyGlideExtension {
     private MyGlideExtension() {}

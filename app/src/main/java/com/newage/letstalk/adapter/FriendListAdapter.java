@@ -10,24 +10,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newage.letstalk.R;
-import com.newage.letstalk.dataLayer.local.tables.Friend;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
-    private List<Friend> friendList;
+    private List<ChatList> chatListList;
     private FriendClickListener listener;
 
     public FriendListAdapter(FriendClickListener listener) {
         this.listener = listener;
     }
 
-    public void swapItems(List<Friend> newItems) {
+    public void swapItems(List<ChatList> newItems) {
         if (newItems == null) return;
 
-        if (friendList != null) friendList.clear();
-        friendList = newItems;
+        if (chatListList != null) chatListList.clear();
+        chatListList = newItems;
 
         // Force the RecyclerView to refresh
         this.notifyDataSetChanged();
@@ -42,16 +42,16 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        Friend friend = friendList.get(position);
-        if (friend == null) return;
+        ChatList chatList = chatListList.get(position);
+        if (chatList == null) return;
 
-        holder.bindType(friend);
+        holder.bindType(chatList);
         //holder.setIsRecyclable(false);
     }
 
     @Override
     public int getItemCount() {
-        return friendList == null ? 0 : friendList.size();
+        return chatListList == null ? 0 : chatListList.size();
     }
 
 
@@ -60,7 +60,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             super(itemView);
         }
 
-        public abstract void bindType(Friend friend);
+        public abstract void bindType(ChatList chatList);
     }
 
     public class ItemVieHolder extends ViewHolder implements View.OnClickListener {
@@ -77,23 +77,23 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         }
 
         @Override
-        public void bindType(Friend friend) {
-            tvw1.setText(friend.getName());
-            tvw2.setText(friend.getPhone());
-            if (!TextUtils.isEmpty(friend.getDp())) {
-                Picasso.with(profileDp.getContext()).load(friend.getDp()).into(profileDp);
+        public void bindType(ChatList chatList) {
+            tvw1.setText(chatList.getName());
+            tvw2.setText(chatList.getPhone());
+            if (!TextUtils.isEmpty(chatList.getDp())) {
+                Picasso.with(profileDp.getContext()).load(chatList.getDp()).into(profileDp);
             }
         }
 
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onFriendClick(friendList.get(getAdapterPosition()));
+                listener.onFriendClick(chatListList.get(getAdapterPosition()));
             }
         }
     }
 
     public interface FriendClickListener {
-        void onFriendClick(Friend friend);
+        void onFriendClick(ChatList chatList);
     }
 }

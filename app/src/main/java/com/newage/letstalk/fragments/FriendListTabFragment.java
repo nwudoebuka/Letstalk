@@ -34,7 +34,7 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.newage.letstalk.Chat3;
+import com.newage.letstalk.activity.Chat3;
 import com.newage.letstalk.HttpParse;
 import com.newage.letstalk.R;
 import com.newage.letstalk.SessionManager;
@@ -42,7 +42,7 @@ import com.newage.letstalk.activity.viewmodel.DashboardViewModel;
 import com.newage.letstalk.adapter.FriendListAdapter;
 import com.newage.letstalk.api.ApiInterface;
 import com.newage.letstalk.api.RetrofitService;
-import com.newage.letstalk.dataLayer.local.tables.Friend;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
 import com.newage.letstalk.utils.Utility;
 
 import java.util.HashSet;
@@ -92,27 +92,27 @@ public class FriendListTabFragment extends Fragment implements FriendListAdapter
         });
 
         final FriendListAdapter mAdapter = new FriendListAdapter(this);
-        final RecyclerView recyclerView = view.findViewById(R.id.friends);
+        final RecyclerView recyclerView = view.findViewById(R.id.chatLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
         viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(DashboardViewModel.class);
-        viewModel.getFriendsList().observe(this, new Observer<List<Friend>>() {
+        viewModel.getFriendsList().observe(this, new Observer<List<ChatList>>() {
             @Override
-            public void onChanged(@Nullable List<Friend> friends) {
-                if (friends != null) {
-                    mAdapter.swapItems(friends);
+            public void onChanged(@Nullable List<ChatList> chatLists) {
+                if (chatLists != null) {
+                    mAdapter.swapItems(chatLists);
                 }
             }
         });
     }
 
     @Override
-    public void onFriendClick(Friend friend) {
+    public void onFriendClick(ChatList chatList) {
         Intent i = new Intent(getContext(), Chat3.class);
-        i.putExtra("friend", friend);
+        i.putExtra("chatList", chatList);
         startActivity(i);
     }
 

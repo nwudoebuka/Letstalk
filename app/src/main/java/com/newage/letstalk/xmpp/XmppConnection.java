@@ -33,7 +33,7 @@ public class XmppConnection implements ConnectionListener {
     private  final String mPassword;
     private  final String mServiceName;
     private XMPPTCPConnection mConnection;
-    private BroadcastReceiver uiThreadMessageReceiver;//Receives messages from the ui thread.
+    private BroadcastReceiver uiThreadMessageReceiver;//Receives Messages from the ui thread.
 
     public /*static*/ enum ConnectionState {
         CONNECTED ,AUTHENTICATED, CONNECTING ,DISCONNECTING ,DISCONNECTED

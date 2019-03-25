@@ -110,10 +110,10 @@ public class Chat2 extends AppCompatActivity {
     String HttpURLdisauto = "https://globeexservices.com/letstalk/disableautoresponder.php";
     String ServerUploadPath ="https://globeexservices.com/letstalk/sendimage.php" ;
     boolean check = true;
-    String Image_Name_JSON = "messages";
-    String Image_Sender_JSON = "sender";
-    String Image_audio_JSON = "audio";
-    String Image_video_JSON = "video";
+    //String Image_Name_JSON = "Messages";
+    //String Image_Sender_JSON = "sender";
+    //String Image_audio_JSON = "audio";
+    //String Image_video_JSON = "video";
     String audio_url;
     String Image_URL_JSON = "dp";
     private ProgressDialog pDialog;
@@ -123,14 +123,14 @@ public class Chat2 extends AppCompatActivity {
     ImageButton image, audio;
     View view ;
     // Save state
-    private Parcelable recyclerViewState;
+//    private Parcelable recyclerViewState;
 
     int RecyclerViewItemPosition ;
 
     RecyclerView.LayoutManager layoutManagerOfrecyclerView;
 
     RecyclerView.Adapter recyclerViewadapter;
-    LinearLayout lin;
+//    LinearLayout lin;
 
     ArrayList<String> ImageTitleNameArrayListForClick;
     ArrayList<String> messagetypearray;
@@ -139,16 +139,16 @@ public class Chat2 extends AppCompatActivity {
 
 
     String user,img,phone,nameofuser;
-    String stringaudio;
+//    String stringaudio;
     TextView username,userphone,prog;
     CircleImageView imageView;
     SessionManager session;
-    ImageButton imageButtonsend;
+//    ImageButton imageButtonsend;
     public int alenght,blenght, newalenght;
     int RQS_RECORDING;
-    Button register, log_in;
-    EditText First_Name, Last_Name, Email, Password ;
-    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder;
+//    Button register, log_in;
+//    EditText First_Name, Last_Name, Email, Password ;
+//    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder;
     String finalResult ;
     public static  String HttpURL = "";
     Boolean CheckEditText ;
@@ -288,7 +288,7 @@ public class Chat2 extends AppCompatActivity {
         HashMap<String, String> user = session.getUserDetails();
         nameofuser = user.get(SessionManager.KEY_NAME);
 
-        HTTP_JSON_URL = "https://globeexservices.com/letstalk/messages.php/?frnd="+phone+"&user="+nameofuser+"";
+        HTTP_JSON_URL = "https://globeexservices.com/letstalk/Messages.php/?frnd="+phone+"&user="+nameofuser+"";
         HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd="+phone+"&user="+nameofuser+"";
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -416,6 +416,41 @@ public class Chat2 extends AppCompatActivity {
         });
     }
 
+
+
+    public void UserRegisterFunction(final String Message, final String Sender, final String Receiver){
+        class UserRegisterFunctionClass extends AsyncTask<String,Void,String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                prog.setText("sending");
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                hashMap.put("Messages",params[0]);
+                hashMap.put("sender",params[1]);
+                hashMap.put("reciever",params[2]);
+                finalResult = httpParse.postRequest(hashMap, HttpURL);
+                return finalResult;
+            }
+            @Override
+            protected void onPostExecute(String httpResponseMsg) {
+                super.onPostExecute(httpResponseMsg);
+                prog.setText("sent");
+//              progressDialog.dismiss();
+                JSON_HTTP_CALL2();
+                Toast.makeText(Chat2.this,httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        UserRegisterFunctionClass userRegisterFunctionClass = new UserRegisterFunctionClass();
+        userRegisterFunctionClass.execute(Message,Sender,Receiver);
+    }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
@@ -424,7 +459,7 @@ public class Chat2 extends AppCompatActivity {
 
             if (resultCode == Activity.RESULT_OK) {
 
-                // Great! Friend has recorded and saved the audio file
+                // Great! ChatList has recorded and saved the audio file
                 result = data.getStringExtra("result");
 
                 Toast.makeText(Chat2.this,
@@ -439,7 +474,7 @@ public class Chat2 extends AppCompatActivity {
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                // Oops! Friend has canceled the recording / back button
+                // Oops! ChatList has canceled the recording / back button
             }
 
 //                    super.onActivityResult(requestCode, resultCode, data);
@@ -730,26 +765,21 @@ public class Chat2 extends AppCompatActivity {
 
                 json = array.getJSONObject(i);
 
-                GetDataAdapter2.setImageTitle(json.getString(Image_Name_JSON));
-                GetDataAdapter2.setImageSender(json.getString(Image_Sender_JSON));
+                GetDataAdapter2.setImageTitle(json.getString("Messages"));
+                GetDataAdapter2.setImageSender(json.getString("sender"));
                 GetDataAdapter2.setsession(nameofuser);
-                GetDataAdapter2.setImageaudio(json.getString(Image_audio_JSON));
-                GetDataAdapter2.setImagevideo(json.getString(Image_video_JSON));
+                GetDataAdapter2.setImageaudio(json.getString("audio"));
+                GetDataAdapter2.setImagevideo(json.getString("video"));
 
                 // Adding image title name in array to display on RecyclerView click event.
-                ImageTitleNameArrayListForClick.add(json.getString(Image_Name_JSON));
-                messagetypearray.add(json.getString(Image_Name_JSON));
-                audio_url_array.add(json.getString(Image_audio_JSON));
+                ImageTitleNameArrayListForClick.add(json.getString("Messages"));
+                messagetypearray.add(json.getString("Messages"));
+                audio_url_array.add(json.getString("audio"));
                 image_url_array.add(json.getString(Image_URL_JSON));
-
-                audio_url = json.getString(Image_audio_JSON);
-
-
+                audio_url = json.getString("audio");
 
                 GetDataAdapter2.setImageUrl(json.getString(Image_URL_JSON));
-
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
             ListOfdataAdapter.add(GetDataAdapter2);
@@ -765,7 +795,6 @@ public class Chat2 extends AppCompatActivity {
 //        int last = recyclerView.getAdapter().getItemCount()-1;
 //        recyclerView.smoothScrollToPosition(last);
 //        recyclerViewadapter.notifyDataSetChanged();
-
     }
 
 
@@ -800,48 +829,6 @@ public class Chat2 extends AppCompatActivity {
             UserRegisterFunction(message, nameofuser, phone);
         }
 
-    }
-
-
-    public void UserRegisterFunction(final String Message, final String Sender, final String Receiver){
-
-        class UserRegisterFunctionClass extends AsyncTask<String,Void,String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-//                progressDialog = ProgressDialog.show(MyChatMessage.this,"Loading Data",null,true,true);
-                prog.setText("sending");
-
-
-            }
-
-            @Override
-            protected void onPostExecute(String httpResponseMsg) {
-
-                super.onPostExecute(httpResponseMsg);
-                prog.setText("sent");
-//                progressDialog.dismiss();
-                JSON_HTTP_CALL2();
-                Toast.makeText(Chat2.this,httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                hashMap.put("messages",params[0]);
-                hashMap.put("sender",params[1]);
-                hashMap.put("reciever",params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-                return finalResult;
-            }
-        }
-
-        UserRegisterFunctionClass userRegisterFunctionClass = new UserRegisterFunctionClass();
-
-        userRegisterFunctionClass.execute(Message,Sender,Receiver);
     }
 
     public void JSON_HTTP_CALL2(){
@@ -879,18 +866,18 @@ public class Chat2 extends AppCompatActivity {
 
                 json = array2.getJSONObject(i);
 
-                GetDataAdapter2.setImageTitle(json.getString(Image_Name_JSON));
-                GetDataAdapter2.setImageSender(json.getString(Image_Sender_JSON));
+                GetDataAdapter2.setImageTitle(json.getString("Messages"));
+                GetDataAdapter2.setImageSender(json.getString("sender"));
                 GetDataAdapter2.setsession(nameofuser);
-                GetDataAdapter2.setImageaudio(json.getString(Image_audio_JSON));
-                GetDataAdapter2.setImagevideo(json.getString(Image_video_JSON));
+                GetDataAdapter2.setImageaudio(json.getString("audio"));
+                GetDataAdapter2.setImagevideo(json.getString("video"));
 
                 // Adding image title name in array to display on RecyclerView click event.
-                ImageTitleNameArrayListForClick.add(json.getString(Image_Name_JSON));
+                ImageTitleNameArrayListForClick.add(json.getString("Messages"));
 
-                messagetypearray.add(json.getString(Image_Name_JSON));
-                audio_url_array.add(json.getString(Image_audio_JSON));
-                audio_url = json.getString(Image_audio_JSON);
+                messagetypearray.add(json.getString("Messages"));
+                audio_url_array.add(json.getString("audio"));
+                audio_url = json.getString("audio");
 
                 GetDataAdapter2.setImageUrl(json.getString(Image_URL_JSON));
 
@@ -958,29 +945,23 @@ public class Chat2 extends AppCompatActivity {
 
                 json = array3.getJSONObject(i);
 
-                GetDataAdapter2.setImageTitle(json.getString(Image_Name_JSON));
-                GetDataAdapter2.setImageSender(json.getString(Image_Sender_JSON));
+                GetDataAdapter2.setImageTitle(json.getString("Messages"));
+                GetDataAdapter2.setImageSender(json.getString("sender"));
                 GetDataAdapter2.setsession(nameofuser);
-                GetDataAdapter2.setImageaudio(json.getString(Image_audio_JSON));
-                GetDataAdapter2.setImagevideo(json.getString(Image_video_JSON));
-                audio_url = json.getString(Image_audio_JSON);
+                GetDataAdapter2.setImageaudio(json.getString("audio"));
+                GetDataAdapter2.setImagevideo(json.getString("video"));
+                audio_url = json.getString("audio");
+
                 // Adding image title name in array to display on RecyclerView click event.
-                ImageTitleNameArrayListForClick.add(json.getString(Image_Name_JSON));
-                messagetypearray.add(json.getString(Image_Name_JSON));
-                audio_url_array.add(json.getString(Image_audio_JSON));
-
-
+                ImageTitleNameArrayListForClick.add(json.getString("Messages"));
+                messagetypearray.add(json.getString("Messages"));
+                audio_url_array.add(json.getString("audio"));
                 GetDataAdapter2.setImageUrl(json.getString(Image_URL_JSON));
-
             } catch (JSONException e) {
-
                 e.printStackTrace();
             }
+
             if(i >=alenght) {
-
-
-
-
 
 //    GetDataAdapter2.setImageTitle("Added");
 //    GetDataAdapter2.setImageSender("none");

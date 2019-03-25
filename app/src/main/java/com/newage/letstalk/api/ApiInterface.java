@@ -1,6 +1,6 @@
 package com.newage.letstalk.api;
 
-import com.newage.letstalk.dataLayer.local.tables.Friend;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
 import com.newage.letstalk.model.request.CheckContactRequest;
 import com.newage.letstalk.model.request.ClearContactRequest;
 import com.newage.letstalk.model.request.LoginRequest;
@@ -31,7 +31,7 @@ public interface ApiInterface {
     Call<String> clearContacts(@Body ClearContactRequest clearContactRequest);
 
     @GET("chat_contacts.php/")
-    Call<List<Friend>> getFriendList(@Query("user") String user);
+    Call<List<ChatList>> getFriendList(@Query("user") String user);
 
     @POST("check_contact.php")
     Call<String> checkContact(@Body CheckContactRequest checkContactRequest);

@@ -97,7 +97,7 @@ public class Chat extends AppCompatActivity {
     String HttpURLdisauto = "https://globeexservices.com/letstalk/disableautoresponder.php";
     String ServerUploadPath = "https://globeexservices.com/letstalk/sendimage.php";
     boolean check = true;
-    String Image_Name_JSON = "messages";
+    String Image_Name_JSON = "Messages";
     String Image_Sender_JSON = "sender";
     String Image_audio_JSON = "audio";
     String Image_video_JSON = "video";
@@ -247,7 +247,7 @@ public class Chat extends AppCompatActivity {
         HashMap<String, String> user = session.getUserDetails();
         nameofuser = user.get(SessionManager.KEY_NAME);
 
-        HTTP_JSON_URL = "https://globeexservices.com/letstalk/messages.php/?frnd=" + phone + "&user=" + nameofuser + "";
+        HTTP_JSON_URL = "https://globeexservices.com/letstalk/Messages.php/?frnd=" + phone + "&user=" + nameofuser + "";
         HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd=" + phone + "&user=" + nameofuser + "";
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -375,7 +375,7 @@ public class Chat extends AppCompatActivity {
 
             if (resultCode == Activity.RESULT_OK) {
 
-                // Great! Friend has recorded and saved the audio file
+                // Great! ChatList has recorded and saved the audio file
                 result = data.getStringExtra("result");
 
                 Toast.makeText(Chat.this,
@@ -391,7 +391,7 @@ public class Chat extends AppCompatActivity {
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                // Oops! Friend has canceled the recording / back button
+                // Oops! ChatList has canceled the recording / back button
             }
 
 //                    super.onActivityResult(requestCode, resultCode, data);
@@ -464,10 +464,10 @@ public class Chat extends AppCompatActivity {
 //
 //            if (RC == Activity.RESULT_OK) {
 //
-//                // Great! Friend has recorded and saved the audio file
+//                // Great! ChatList has recorded and saved the audio file
 //                result = I.getStringExtra("result");
 //
-//                Toast.makeText(MyChatMessage.this,
+//                Toast.makeText(Chat.this,
 //                        "Saved: " + result,
 //                        Toast.LENGTH_LONG).show();
 //                new UploadFileAsync().execute("");
@@ -477,7 +477,7 @@ public class Chat extends AppCompatActivity {
 //
 //            }
 //            if (RC == Activity.RESULT_CANCELED) {
-//                // Oops! Friend has canceled the recording / back button
+//                // Oops! ChatList has canceled the recording / back button
 //            }
 //        }
 //    }
@@ -798,7 +798,7 @@ public class Chat extends AppCompatActivity {
             protected void onPreExecute() {
                 super.onPreExecute();
 
-//                progressDialog = ProgressDialog.show(MyChatMessage.this,"Loading Data",null,true,true);
+//                progressDialog = ProgressDialog.show(Chat.this,"Loading Data",null,true,true);
                 prog.setText("sending");
 
 
@@ -818,7 +818,7 @@ public class Chat extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
 
-                hashMap.put("messages", params[0]);
+                hashMap.put("Messages", params[0]);
                 hashMap.put("sender", params[1]);
                 hashMap.put("reciever", params[2]);
                 finalResult = httpParse.postRequest(hashMap, HttpURL);

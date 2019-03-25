@@ -7,39 +7,39 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.newage.letstalk.dataLayer.local.tables.Friend;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
 
 import java.util.List;
 
 @Dao
-public interface FriendDao {
+public interface ChatListDao {
 
     @Query("SELECT * FROM friends")
-    List<Friend> getFriends();
+    List<ChatList> getFriends();
 
     @Query("SELECT * from friends")
-    LiveData<List<Friend>> getFriendsLive();
+    LiveData<List<ChatList>> getFriendsLive();
 
     @Query("SELECT * FROM friends WHERE id = :friendId")
-    Friend getFriendById(String friendId);
+    ChatList getFriendById(String friendId);
 
     @Query("SELECT * FROM friends WHERE id = :friendId")
-    LiveData<Friend> getFriendByIdLive(String friendId);
+    LiveData<ChatList> getFriendByIdLive(String friendId);
 
     // @Query("SELECT * FROM friends WHERE isOnline = 1 ORDER BY match DESC LIMIT :limit")
-   // Friend getFriendsWith(String friendId, int limit);
+   // ChatList getFriendsWith(String friendId, int limit);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertFriend(Friend friend);
+    void insertFriend(ChatList chatList);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertFriends(List<Friend> friends);
+    void insertFriends(List<ChatList> chatLists);
 
     @Update
-    int updateFriend(Friend friend);
+    int updateFriend(ChatList chatList);
 
     @Update
-    int updateFriends(Friend... friends);
+    int updateFriends(ChatList... chatLists);
 
     @Query("DELETE FROM friends WHERE id = :friendId")
     int deleteFriendById(String friendId);

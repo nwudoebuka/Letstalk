@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/invite"
-        android:title="Invite a friend"/>
+        android:title="Invite a chatList"/>
     <item
         android:id="@+id/refresh"
         android:title="Refresh contact"/>

@@ -28,7 +28,7 @@ public class XmppConnectionService extends Service {
     public static XmppConnection.LoggedInState sLoggedInState;
     private boolean mActive;//Stores whether or not the thread is active
     private Thread mThread;
-    private Handler mTHandler;//We use this handler to post messages to
+    private Handler mTHandler;//We use this handler to post Messages to
     //the background thread.
     private XmppConnection mConnection;
 

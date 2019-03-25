@@ -1,7 +1,6 @@
 package com.newage.letstalk.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-//import com.esafirm.imagepicker.model.Image;
 import com.bumptech.glide.Glide;
 import com.esafirm.imagepicker.model.Image;
 import com.newage.letstalk.R;
@@ -44,16 +42,14 @@ public class AttachmentView extends AppCompatActivity {
         images = getIntent().getParcelableArrayListExtra("images");
         for (Image image : images) {
             ImageView imageView = new ImageView(this);
-            Glide.with(imageView).load(image.getPath()).into(imageView);
-
-//            GlideApp.with(this).load(bitmap)
-//                    .placeholder(R.drawable.ic_image_placeholder)
-//                    .error(R.drawable.ic_broken_image)
-//                    .into(imageView);
-
+            imageView.setAdjustViewBounds(true);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            Glide.with(imageView).load(image.getPath())
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .error(R.drawable.ic_broken_image)
+                    .into(imageView);
             linearLayout.addView(imageView);
         }
-
 
         EmojIconActions emojIcon = new EmojIconActions(this, findViewById(android.R.id.content), mMsgEditText, emoji);
         emojIcon.ShowEmojIcon();
@@ -77,7 +73,6 @@ public class AttachmentView extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     public void onBackPressed() {

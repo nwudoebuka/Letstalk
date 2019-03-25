@@ -6,5 +6,5 @@ public interface ChatMessage {
 
     int getChatViewType();
     //String getChatViewTypeName();
-    // long getTimeInMilliSeconds();
+    //long getTimeInMilliSeconds();
 }

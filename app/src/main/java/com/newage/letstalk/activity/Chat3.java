@@ -1,15 +1,17 @@
-package com.newage.letstalk;
+package com.newage.letstalk.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -17,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,19 +42,21 @@ import android.widget.Toast;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.features.ReturnMode;
 import com.esafirm.imagepicker.model.Image;
-import com.newage.letstalk.activity.AttachmentView;
+import com.newage.letstalk.HttpParse;
+import com.newage.letstalk.R;
+import com.newage.letstalk.Sendimage;
+import com.newage.letstalk.SessionManager;
+import com.newage.letstalk.activity.viewmodel.MessageViewModel;
 import com.newage.letstalk.adapter.ChatAdapter;
-import com.newage.letstalk.dataLayer.local.tables.Friend;
-import com.newage.letstalk.model.FriendChatMessage;
-import com.newage.letstalk.model.MyChatMessage;
-//import com.newage.letstalk.utils.ImagePicker;
-import com.newage.letstalk.xmpp.XmppConnection;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
+import com.newage.letstalk.dataLayer.local.tables.Messages;
 import com.newage.letstalk.xmpp.XmppConnectionService;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -66,21 +72,19 @@ public class Chat3 extends AppCompatActivity {
     TextView info;
     ImageButton audio;
 
-    String contactJid;
+    String contactJid, myJid;
     String nameofuser;
     SessionManager session;
-    String Message_Holder;
     ChatAdapter adapter;
-    Friend friend;
+    ChatList chatList;
 
-    private BroadcastReceiver mBroadcastReceiver;
+  //  private BroadcastReceiver mBroadcastReceiver;
     private static final int MULTIPLE_PERMISSIONS = 12;
     private int ACTION = 0;
     private MediaRecorder mediaRecorder;
     private String audioSavePathInDevice;
     private boolean isRecording = false;
 
-    private static final int IMAGE_REQUEST_CODE = 12340;
     private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
 
@@ -89,12 +93,15 @@ public class Chat3 extends AppCompatActivity {
     ImageButton emoji;
     ImageButton attachment;
 
+    private MessageViewModel viewModel;
+
+    HttpParse httpParse = new HttpParse();
+    String HttpURL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_layout);
-
-        //ImagePicker.setMinQuality(600, 600);
 
         Toolbar toolbar = findViewById(R.id.toolbar_contact);
         setSupportActionBar(toolbar);
@@ -118,10 +125,14 @@ public class Chat3 extends AppCompatActivity {
         audio = findViewById(R.id.pick_audio);
         LinearLayout input = findViewById(R.id.form);
 
+        session = new SessionManager(getBaseContext());
+        nameofuser = session.getPhoneNumber();
+
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
-            friend = (Friend) intent.getSerializableExtra("friend");
-            contactJid = friend.getPhone();
+            chatList = (ChatList) intent.getSerializableExtra("chatList");
+            contactJid = chatList.getPhone();
+            myJid = session.getPhoneNumber();
         }
 
         //setTitle(contactJid);
@@ -164,8 +175,6 @@ public class Chat3 extends AppCompatActivity {
             public void onClick(View v) {
                 ACTION = 2;
                 if (checkPermissions()) {
-                    //ImagePicker.pickImage(Chat3.this, "Select your image", IMAGE_REQUEST_CODE, false);
-                    //ImagePicker.cameraOnly().start(Chat3.this);
                     pickImage();
                 }
             }
@@ -189,10 +198,6 @@ public class Chat3 extends AppCompatActivity {
             }
         });
 
-
-        session = new SessionManager(getBaseContext());
-        nameofuser = session.getPhoneNumber();
-
         adapter = new ChatAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -204,14 +209,33 @@ public class Chat3 extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         /* if chating with bot*/
-        if (TextUtils.equals(friend.getPhone(), "bot")) {
+        if (TextUtils.equals(contactJid, "bot")) {
             input.setVisibility(View.GONE);
-
-            FriendChatMessage chatMessage = new FriendChatMessage(friend.getPhone());
-            chatMessage.setMessageText("Welcome to letstalk");
-            adapter.swapItem(chatMessage);
+            Messages chat = new Messages();
+            chat.setRemoteId(contactJid);
+            chat.setMyId(myJid);
+            chat.setFromMe(false);
+            chat.setStatus(0);
+            chat.setPushNeeded(false);
+            chat.setDate(new Date());
+            chat.setData("Welcome to Letstalk");
+            adapter.swapItem(chat);
             recyclerView.smoothScrollToPosition(adapter.getItemCount());
         }
+
+        viewModel = ViewModelProviders.of(this).get(MessageViewModel.class);
+        viewModel.getMessages(contactJid);
+        viewModel.getMessagesList().observe(this, new Observer<List<Messages>>() {
+            @Override
+            public void onChanged(List<Messages> messages) {
+                adapter.swapItems(messages);
+                recyclerView.smoothScrollToPosition(adapter.getItemCount());
+            }
+        });
+
+
+        String HTTP_JSON_URL = "https://globeexservices.com/letstalk/Messages.php/?frnd="+contactJid+"&user="+myJid+"";
+        HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd="+contactJid+"&user="+myJid+"";
     }
 
     public void sendTextMessage(View v) {
@@ -220,26 +244,113 @@ public class Chat3 extends AppCompatActivity {
         if (!TextUtils.isEmpty(message)) {
             mMsgEditText.setText("");
 
-            MyChatMessage chat = new MyChatMessage();
-            chat.setMessageText(message);
-            adapter.addItem(chat);
-            recyclerView.smoothScrollToPosition(adapter.getItemCount());
+            Messages chat = new Messages();
+            chat.setRemoteId(contactJid);
+            chat.setMyId(myJid);
+            chat.setFromMe(true);
+            chat.setStatus(0);
+            chat.setPushNeeded(true);
+            chat.setDate(new Date());
+            chat.setData(message);
+
+            viewModel.saveMessage(chat); //save on local db
+            sendTextRemote(chat); //send to server
 
             // perform actual message sending
-            if (XmppConnectionService.getState().equals(XmppConnection.ConnectionState.CONNECTED)) {
-                Log.d(TAG, "The client is connected to the server, Sending Message");
-
-                //Send the message to the server
-                Intent intent = new Intent(XmppConnectionService.SEND_MESSAGE);
-                intent.putExtra(XmppConnectionService.BUNDLE_MESSAGE_BODY, message);
-                intent.putExtra(XmppConnectionService.BUNDLE_TO, contactJid);
-                sendBroadcast(intent);
-            } else {
-                Toast.makeText(getApplicationContext(), "Client not connected to server ,Message not sent!", Toast.LENGTH_LONG).show();
-            }
-            //message sending ends here
+//            if (XmppConnectionService.getState().equals(XmppConnection.ConnectionState.CONNECTED)) {
+//                Log.d(TAG, "The client is connected to the server, Sending Message");
+//                //Send the message to the server
+//                Intent intent = new Intent(XmppConnectionService.SEND_MESSAGE);
+//                intent.putExtra(XmppConnectionService.BUNDLE_MESSAGE_BODY, message);
+//                intent.putExtra(XmppConnectionService.BUNDLE_TO, contactJid);
+//                sendBroadcast(intent);
+//            } else {
+//               // Toast.makeText(getApplicationContext(), "Client not connected to server ,Message not sent!", Toast.LENGTH_LONG).show();
+//            }
         }
     }
+
+    public void sendTextRemote(Messages messages){
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("Messages", messages.getData());
+        hashMap.put("sender", messages.getMyId());
+        hashMap.put("reciever", messages.getRemoteId());
+
+        SendMessageClass sendMessageClass = new SendMessageClass();
+        sendMessageClass.execute(hashMap);
+    }
+
+    private void sendAudio() {
+        if (!TextUtils.isEmpty(audioSavePathInDevice)) {
+            Messages chat = new Messages();
+            chat.setRemoteId(contactJid);
+            chat.setMyId(myJid);
+            chat.setFromMe(true);
+            chat.setStatus(0);
+            chat.setPushNeeded(true);
+            chat.setDate(new Date());
+            chat.setAudio(audioSavePathInDevice);
+
+            viewModel.saveMessage(chat); //save on local db
+            sendAudioRemote(chat); //send to server
+        }
+    }
+
+    public void sendAudioRemote(Messages messages){
+//        HashMap<String, String> hashMap = new HashMap<>();
+//        hashMap.put("Messages", messages.getData());
+//        hashMap.put("sender", messages.getMyId());
+//        hashMap.put("reciever", messages.getRemoteId());
+//
+//        SendMessageClass sendMessageClass = new SendMessageClass();
+//        sendMessageClass.execute(hashMap);
+    }
+
+    public void sendImageMessage(String caption, List<Image> images) {
+        Messages chat = new Messages();
+        chat.setRemoteId(contactJid);
+        chat.setMyId(myJid);
+        chat.setFromMe(true);
+        chat.setStatus(0);
+        chat.setPushNeeded(true);
+        chat.setDate(new Date());
+        chat.setData(caption);
+        chat.setImage(images.get(0).getPath());
+
+        viewModel.saveMessage(chat); //save on local db
+        sendImageRemote(chat); //send to server
+    }
+
+    public void sendImageRemote(Messages messages){
+//        HashMap<String, String> hashMap = new HashMap<>();
+//        hashMap.put("Messages", messages.getData());
+//        hashMap.put("sender", messages.getMyId());
+//        hashMap.put("reciever", messages.getRemoteId());
+//
+//        SendMessageClass sendMessageClass = new SendMessageClass();
+//        sendMessageClass.execute(hashMap);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class SendMessageClass extends AsyncTask<HashMap, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(HashMap... params) {
+            HashMap<String, String> hashMap = (HashMap<String, String>) params[0];
+            return httpParse.postRequest(hashMap, HttpURL);
+        }
+        @Override
+        protected void onPostExecute(String httpResponseMsg) {
+            super.onPostExecute(httpResponseMsg);
+            // JSON_HTTP_CALL2();
+        }
+    }
+
 
     private void recordAudio() {
         if (createAudioStore()) {
@@ -288,27 +399,6 @@ public class Chat3 extends AppCompatActivity {
         attachment.setEnabled(true);
         send.setEnabled(true);
         mMsgEditText.setEnabled(true);
-    }
-
-    private void sendAudio() {
-        if (!TextUtils.isEmpty(audioSavePathInDevice)) {
-            MyChatMessage chat = new MyChatMessage();
-            chat.setMessageAudio(audioSavePathInDevice);
-            adapter.addItem(chat);
-            recyclerView.smoothScrollToPosition(adapter.getItemCount());
-        }
-    }
-
-    public void sendImageMessage(String caption, List<Image> images) {
-        MyChatMessage chat = new MyChatMessage();
-        chat.setMessageText(caption);
-        chat.setMessageImage(images.get(0).getPath());
-
-//        chat.setBitmap(bitmap);
-//        chat.setMessageImage(imageUri);
-
-        adapter.addItem(chat);
-        recyclerView.smoothScrollToPosition(adapter.getItemCount());
     }
 
     private TextWatcher onTextChangedListener() {
@@ -361,7 +451,7 @@ public class Chat3 extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mBroadcastReceiver);
+      //  unregisterReceiver(mBroadcastReceiver);
         if (mediaRecorder != null) {
             enableAllViews();
             mediaRecorder.release();
@@ -379,44 +469,41 @@ public class Chat3 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                assert action != null;
-                switch (action) {
-                    case XmppConnectionService.NEW_MESSAGE:
-                        String from = intent.getStringExtra(XmppConnectionService.BUNDLE_FROM_JID);
-                        String body = intent.getStringExtra(XmppConnectionService.BUNDLE_MESSAGE_BODY);
-
-//                        if (from.equals(contactJid)) {
-                        FriendChatMessage chatMessage = new FriendChatMessage(from);
-                        chatMessage.setMessageText(body);
-                        adapter.addItem(chatMessage);
-                        recyclerView.smoothScrollToPosition(adapter.getItemCount());
-//                        } else {
-//                            Log.d(TAG, "Got a message from jid :" + from);
-//                        }
-                        break;
-                    case XmppConnectionService.UI_AUTHENTICATED:
-                        Log.d(TAG, "Got a broadcast to show the main app window");
-                        //Show the main app window
-                        //showProgress(false);
-                        //Intent i2 = new Intent(mContext,ContactListActivity.class);
-                        //startActivity(i2);
-                        //finish();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        //IntentFilter filter = new IntentFilter(XmppConnectionService.UI_AUTHENTICATED);
-        IntentFilter filter = new IntentFilter(XmppConnectionService.NEW_MESSAGE);
-        registerReceiver(mBroadcastReceiver, filter);
+//        mBroadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                String action = intent.getAction();
+//                assert action != null;
+//                switch (action) {
+//                    case XmppConnectionService.NEW_MESSAGE:
+//                        String from = intent.getStringExtra(XmppConnectionService.BUNDLE_FROM_JID);
+//                        String body = intent.getStringExtra(XmppConnectionService.BUNDLE_MESSAGE_BODY);
+//
+////                        if (from.equals(contactJid)) {
+//
+////                        } else {
+////                            Log.d(TAG, "Got a message from jid :" + from);
+////                        }
+//                        break;
+//                    case XmppConnectionService.UI_AUTHENTICATED:
+//                        Log.d(TAG, "Got a broadcast to show the main app window");
+//                        //Show the main app window
+//                        //showProgress(false);
+//                        //Intent i2 = new Intent(mContext,ContactListActivity.class);
+//                        //startActivity(i2);
+//                        //finish();
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        };
+//
+//        //IntentFilter filter = new IntentFilter(XmppConnectionService.UI_AUTHENTICATED);
+//        IntentFilter filter = new IntentFilter(XmppConnectionService.NEW_MESSAGE);
+//        registerReceiver(mBroadcastReceiver, filter);
+//
     }
-
 
     public boolean checkPermissions() {
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -447,11 +534,8 @@ public class Chat3 extends AppCompatActivity {
                 if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getBaseContext()), Manifest.permission.READ_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(Objects.requireNonNull(getBaseContext()),
                         Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                    //ImagePicker.pickImage(this, "Select your image", IMAGE_REQUEST_CODE, false);
                     //ImagePicker.cameraOnly().start(this);
-
                     pickImage();
-
                 }
             }
         }
@@ -462,96 +546,45 @@ public class Chat3 extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             images = (ArrayList<Image>) ImagePicker.getImages(data);
-
-//            Intent intent = new Intent(getBaseContext(), AttachmentView.class);
-//            intent.putExtra("hello", "hello");
-//            intent.putExtra("imageArray", byteArray);
-//            intent.putExtra("image", images.get(0));
-//            startActivityForResult(intent, 123);
-
             Intent intent = new Intent(this, AttachmentView.class);
             intent.putParcelableArrayListExtra("images", (ArrayList<? extends Parcelable>) images);
             startActivityForResult(intent, 123);
             return;
         }
 
-        if (requestCode == 123 && data != null) {
-
+        if (requestCode == 123 && resultCode == Activity.RESULT_OK && data != null) {
             List<Image> images = data.getParcelableArrayListExtra("images");
             String caption = data.getStringExtra("message");
             sendImageMessage(caption, images);
             return;
         }
 
-
-
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (requestCode == IMAGE_REQUEST_CODE) {
-////                Bitmap bitmap = ImagePicker.getImageFromResult(getBaseContext(), requestCode, resultCode, data);
-////                if (bitmap != null) {
-////
-////                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-////                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-////                    byte[] byteArray = stream.toByteArray();
-////
-////                    Intent intent = new Intent(getBaseContext(), AttachmentView.class);
-////                    //intent.putExtra("hello", "hello");
-////                    intent.putExtra("imageArray", byteArray);
-////                    startActivityForResult(intent, 123);
-////                }
-//
-//
-//            } else if (requestCode == 123) {
-//                Bitmap bitmap = data.getParcelableExtra("bitmap");
-//                String caption = data.getStringExtra("message");
-//                String imageUri = data.getStringExtra("imageUri");
-//                sendImageMessage(caption, imageUri, bitmap);
-//            }
-//        }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void pickImage() {
-        final boolean isSingleMode = false;
-        final boolean useCustomImageLoader = true;
         final boolean folderMode = true;
-        final boolean includeVideo = true;
-        final boolean isExclude = true;
+        final boolean includeVideo = false;
+        final boolean showCamera = true;
 
         ImagePicker imagePicker = ImagePicker.create(this)
                 .language("in") // Set image picker language
-                //.theme(R.style.ImagePickerTheme)
                 .returnMode(ReturnMode.ALL) // set whether pick action or camera action should return immediate result or not. Only works in single mode for image picker
                 .folderMode(folderMode) // set folder mode (false by default)
                 .includeVideo(includeVideo) // include video (false by default)
                 .toolbarArrowColor(Color.WHITE) // set toolbar arrow up color
-                .toolbarFolderTitle("Send to" + contactJid) // folder selection title
+                .toolbarFolderTitle("Send to " + contactJid) // folder selection title
                 .toolbarImageTitle("Tap to select") // image selection title
                 .toolbarDoneButtonText("DONE"); // done button text
 
-        if (useCustomImageLoader) {
-//            imagePicker.imageLoader(new GrayscaleImageLoader());
-        }
-
-        if (isSingleMode) {
-            imagePicker.single();
-        } else {
-            imagePicker.multi(); // multi mode (default mode)
-        }
-
-        if (isExclude) {
-            imagePicker.exclude(images); // don't show anything on this selected images
-        } else {
-            imagePicker.origin(images); // original selected images, used in multi mode
-        }
-
-        imagePicker.limit(10) // max images can be selected (99 by default)
-                .showCamera(true) // show camera or not (true by default)
-                .imageDirectory("Camera")   // captured image directory name ("Camera" folder by default)
-                .imageFullDirectory(Environment.getExternalStorageDirectory().getPath()); // can be full path
-
-        imagePicker.start();
+        imagePicker.single();
+        //imagePicker.multi(); // multi mode (default mode)
+        imagePicker.exclude(images); // don't show anything on this selected images
+        imagePicker.limit(2) // max images can be selected (99 by default)
+                 .showCamera(showCamera) // show camera or not (true by default)
+                 .imageDirectory("Camera")   // captured image directory name ("Camera" folder by default)
+                 .imageFullDirectory(Environment.getExternalStorageDirectory().getPath()) // can be full path
+                .start();
     }
 
 

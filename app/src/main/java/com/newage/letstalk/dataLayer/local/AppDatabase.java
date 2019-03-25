@@ -6,16 +6,19 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import android.content.Context;
 
-import com.newage.letstalk.dataLayer.local.dao.FriendDao;
-import com.newage.letstalk.dataLayer.local.tables.Friend;
+import com.newage.letstalk.dataLayer.local.dao.ChatListDao;
+import com.newage.letstalk.dataLayer.local.dao.MessagesDao;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
+import com.newage.letstalk.dataLayer.local.tables.Messages;
 
-@Database(entities = {Friend.class}, version = 1, exportSchema = false)
+@Database(entities = {ChatList.class, Messages.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
     private static String DB_NAME = "letstalkDb.db";
 
-    public abstract FriendDao getFriendDAO();
+    public abstract ChatListDao getFriendDAO();
+    public abstract MessagesDao getMessageDAO();
 
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {

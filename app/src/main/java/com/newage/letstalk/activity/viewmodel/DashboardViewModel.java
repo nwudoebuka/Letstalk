@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.newage.letstalk.SessionManager;
 import com.newage.letstalk.dataLayer.DataRepository;
-import com.newage.letstalk.dataLayer.local.tables.Friend;
+import com.newage.letstalk.dataLayer.local.tables.ChatList;
 
 import java.util.List;
 
@@ -33,18 +33,18 @@ public class DashboardViewModel extends AndroidViewModel {
         friendRequest.setValue(phoneNumber);
     }
 
-    public LiveData<List<Friend>> getFriendsList() {
-        return Transformations.switchMap(friendRequest, new Function<String, LiveData<List<Friend>>>() {
+    public LiveData<List<ChatList>> getFriendsList() {
+        return Transformations.switchMap(friendRequest, new Function<String, LiveData<List<ChatList>>>() {
             @Override
-            public LiveData<List<Friend>> apply(String input) {
+            public LiveData<List<ChatList>> apply(String input) {
 
-                LiveData<List<Friend>> resLiveData = repository.getFriends(input);
+                LiveData<List<ChatList>> resLiveData = repository.getFriends(input);
 
-                final MediatorLiveData<List<Friend>> mediator = new MediatorLiveData<>();
-                mediator.addSource(resLiveData, new Observer<List<Friend>>() {
+                final MediatorLiveData<List<ChatList>> mediator = new MediatorLiveData<>();
+                mediator.addSource(resLiveData, new Observer<List<ChatList>>() {
                     @Override
-                    public void onChanged(@Nullable List<Friend> friends) {
-                        mediator.setValue(friends);
+                    public void onChanged(@Nullable List<ChatList> chatLists) {
+                        mediator.setValue(chatLists);
                     }
                 });
 
@@ -53,8 +53,8 @@ public class DashboardViewModel extends AndroidViewModel {
         });
     }
 
-    public void addFriend(Friend friend){
-        repository.insertFriend(friend);
+    public void addFriend(ChatList chatList){
+        repository.insertFriend(chatList);
     }
 
     public void refreshFriendList(){
