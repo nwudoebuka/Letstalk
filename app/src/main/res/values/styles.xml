@@ -10,9 +10,4 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Splash" parent="AppTheme">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-    </style>
-
 </resources>

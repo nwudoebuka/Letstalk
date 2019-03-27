@@ -3,7 +3,6 @@
     <string name="app_registered">Letstalk\u2122</string>
     <string name="prompt_phone">Phone</string>
     <string name="prompt_name">Name</string>
-    <string name="sms_notice">Let\'stalk will send an sms message to verify your phone number. enter your phone number below.</string>
     <string name="terms">By clicking "Sign up" you agree to let\'s talk.</string>
     <string name="already_registered">Already registered?.</string>
     <string name="login_here">Login here.</string>
