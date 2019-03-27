@@ -1,10 +1,14 @@
 package com.newage.letstalk.dataLayer;
 
 import android.annotation.SuppressLint;
+
 import androidx.lifecycle.LiveData;
+
 import android.content.Context;
 import android.os.AsyncTask;
+
 import androidx.annotation.NonNull;
+
 import android.util.Log;
 
 import com.newage.letstalk.api.ApiInterface;
@@ -35,15 +39,15 @@ public class DataRepository {
     public LiveData<List<ChatList>> getFriends(String phoneNumber) {
         LiveData<List<ChatList>> list = database.getFriendDAO().getFriendsLive();
 
-        if(list.getValue() == null){
+        if (list.getValue() == null) {
             refreshFriendList(phoneNumber);
         }
 
         return list;
     }
 
-    public LiveData<List<Messages>> getMessages(String remoteId) {
-        LiveData<List<Messages>> list = database.getMessageDAO().getItemsLive(remoteId);
+    public LiveData<List<Messages>> getMessages(String remoteId, String me) {
+        LiveData<List<Messages>> list = database.getMessageDAO().getItemsLive(remoteId, me);
         //if(list.getValue() == null){ refreshFriendList(phoneNumber); }
         return list;
     }
@@ -119,23 +123,24 @@ public class DataRepository {
         }.execute();
     }
 
-    public void refreshFriendList(String phoneNumber){
+    public void refreshFriendList(String phoneNumber) {
         ApiInterface api = RetrofitService.initializer();
         Call<List<ChatList>> call = api.getFriendList(phoneNumber);
         call.enqueue(new Callback<List<ChatList>>() {
             @Override
             public void onResponse(@NonNull Call<List<ChatList>> call, @NonNull Response<List<ChatList>> response) {
                 if (response.isSuccessful()) {
-                      List<ChatList> chatLists = response.body();
-                      insertFriends(chatLists);
+                    Log.i("DataRespository", "Successful");
+                    List<ChatList> chatLists = response.body();
+                    insertFriends(chatLists);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<ChatList>> call, @NonNull Throwable t) {
-                if(call.isCanceled()){
+                if (call.isCanceled()) {
                     Log.e("DataRespository", "Call was canceled");
-                }else {
+                } else {
                     Log.e("DataRespository", t.getMessage());
                 }
             }

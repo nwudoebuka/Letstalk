@@ -76,17 +76,10 @@ public class Contacts extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
         setTitle("Contacts");
         // Session class instance
+
         session = new SessionManager(getApplicationContext());
+        final String nameofuser = session.getPhoneNumber();
 
-
-        /**
-         * Call this function whenever you want to check user login
-         * This will redirect user to LoginActivity is he is not
-         * logged in
-         * */
-//        session.checkLogin();
-        HashMap<String, String> user = session.getUserDetails();
-        final String nameofuser = user.get(SessionManager.KEY_NAME);
         HTTP_JSON_URL = "https://globeexservices.com/letstalk/sync.php/?user=" + nameofuser + "";
 
         Toast.makeText(this, HTTP_JSON_URL, Toast.LENGTH_LONG).show();

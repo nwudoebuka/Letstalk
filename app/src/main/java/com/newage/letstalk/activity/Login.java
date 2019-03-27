@@ -378,7 +378,7 @@ public class Login extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 hashMap.put("phone", params[0]);
                 hashMap.put("otp", params[1]);
-                return httpParse.postRequest(hashMap, HttpURL);
+                return httpParse.postRequest(HttpURL, hashMap);
             }
         }
 
@@ -448,12 +448,11 @@ public class Login extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
                 hashMap.put("user", params[0]);
-                return httpParse.postRequest(hashMap, HttpURLd);
+                return httpParse.postRequest(HttpURLd, hashMap);
             }
         }
 
         UserRegisterFunctionClassdelete userRegisterFunctionClassdelete = new UserRegisterFunctionClassdelete();
-
         userRegisterFunctionClassdelete.execute(Phone);
     }
 

@@ -19,6 +19,7 @@ import com.newage.letstalk.R;
 import com.newage.letstalk.SessionManager;
 import com.newage.letstalk.Sms;
 import com.newage.letstalk.activity.viewmodel.DashboardViewModel;
+import com.newage.letstalk.services.MyService;
 
 public class Dashboard extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;
@@ -49,6 +50,9 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        Intent startServiceIntent = new Intent(this, MyService.class);
+        startService(startServiceIntent);
 
         session = new SessionManager(getApplicationContext());
         viewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
@@ -116,6 +120,7 @@ public class Dashboard extends AppCompatActivity {
             return true;
         }else if(id == R.id.log_out){
             session.logoutUser();
+            viewModel.logout();
 
             Intent i = new Intent(this, Register.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

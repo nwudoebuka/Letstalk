@@ -78,6 +78,7 @@ import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
+@Deprecated
 public class Chat extends AppCompatActivity {
     ProgressBar progressBar;
     List<DataAdapter> ListOfdataAdapter;
@@ -111,20 +112,14 @@ public class Chat extends AppCompatActivity {
     View view;
     // Save state
     private Parcelable recyclerViewState;
-
     int RecyclerViewItemPosition;
-
     RecyclerView.LayoutManager layoutManagerOfrecyclerView;
-
     RecyclerView.Adapter recyclerViewadapter;
     LinearLayout lin;
-
     ArrayList<String> ImageTitleNameArrayListForClick;
     ArrayList<String> messagetypearray;
     ArrayList<String> audio_url_array;
     ArrayList<String> image_url_array;
-
-
     String user, img, phone, nameofuser;
     String stringaudio;
     TextView username, userphone, prog;
@@ -237,15 +232,7 @@ public class Chat extends AppCompatActivity {
         }
 
         session = new SessionManager(this);
-
-        /**
-         * Call this function whenever you want to check user login
-         * This will redirect user to LoginActivity is he is not
-         * logged in
-         * */
-//        session.checkLogin();
-        HashMap<String, String> user = session.getUserDetails();
-        nameofuser = user.get(SessionManager.KEY_NAME);
+        nameofuser = session.getPhoneNumber();
 
         HTTP_JSON_URL = "https://globeexservices.com/letstalk/Messages.php/?frnd=" + phone + "&user=" + nameofuser + "";
         HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd=" + phone + "&user=" + nameofuser + "";
@@ -817,12 +804,10 @@ public class Chat extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... params) {
-
-                hashMap.put("Messages", params[0]);
+                hashMap.put("messages", params[0]);
                 hashMap.put("sender", params[1]);
                 hashMap.put("reciever", params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-                return finalResult;
+                return httpParse.postRequest(HttpURL, hashMap);
             }
         }
 
@@ -1081,9 +1066,7 @@ public class Chat extends AppCompatActivity {
 
                 hashMap.put("user", params[0]);
                 hashMap.put("message", params[1]);
-                finalResult = httpParse.postRequest(hashMap, HttpURLauto);
-
-                return finalResult;
+                return httpParse.postRequest(HttpURLauto, hashMap);
             }
         }
 
@@ -1123,17 +1106,12 @@ public class Chat extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... params) {
-
                 hashMap.put("user", params[0]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURLdisauto);
-
-                return finalResult;
+                return httpParse.postRequest(HttpURLdisauto, hashMap);
             }
         }
 
         UserRegisterFunctionClassdisauto userRegisterFunctionClassdisauto = new UserRegisterFunctionClassdisauto();
-
         userRegisterFunctionClassdisauto.execute(Phone);
     }
 

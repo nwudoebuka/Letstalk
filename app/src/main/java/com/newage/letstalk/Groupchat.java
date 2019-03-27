@@ -247,7 +247,7 @@ public class Groupchat extends AppCompatActivity {
                 hashMap.put("name",params[1]);
                 hashMap.put("userid",params[2]);
                 hashMap.put("groupname",params[3]);
-                return httpParse.postRequest(hashMap, HttpURL);
+                return httpParse.postRequest(HttpURL, hashMap);
             }
         }
 
@@ -289,7 +289,7 @@ public class Groupchat extends AppCompatActivity {
                 hashMap.put("phonein",params[0]);
                 hashMap.put("nameofsender",params[1]);
                 hashMap.put("nameoff",params[2]);
-                return  httpParse.postRequest(hashMap, HttpURLin);
+                return  httpParse.postRequest(HttpURLin, hashMap);
             }
         }
 

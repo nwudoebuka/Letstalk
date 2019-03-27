@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
@@ -30,6 +32,7 @@ import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,9 +45,9 @@ import android.widget.Toast;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.features.ReturnMode;
 import com.esafirm.imagepicker.model.Image;
+
 import com.newage.letstalk.HttpParse;
 import com.newage.letstalk.R;
-import com.newage.letstalk.Sendimage;
 import com.newage.letstalk.SessionManager;
 import com.newage.letstalk.activity.viewmodel.MessageViewModel;
 import com.newage.letstalk.adapter.ChatAdapter;
@@ -52,51 +55,60 @@ import com.newage.letstalk.dataLayer.local.tables.ChatList;
 import com.newage.letstalk.dataLayer.local.tables.Messages;
 import com.newage.letstalk.xmpp.XmppConnectionService;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class Chat3 extends AppCompatActivity {
-    private static final String TAG = Sendimage.class.getSimpleName();
-    RecyclerView recyclerView;
-    EmojiconEditText mMsgEditText;
-    ImageButton send;
-    TextView info;
-    ImageButton audio;
-
-    String contactJid, myJid;
-    String nameofuser;
-    SessionManager session;
-    ChatAdapter adapter;
-    ChatList chatList;
-
-  //  private BroadcastReceiver mBroadcastReceiver;
+    private static final String TAG = Chat3.class.getSimpleName();
+    private RecyclerView recyclerView;
+    private EmojiconEditText mMsgEditText;
+    private ImageButton send;
+    private TextView info;
+    private ImageButton audio;
+    private String contactJid, myJid;
+    private String HTTP_JSON_URL;
+    private SessionManager session;
+    private ChatAdapter adapter;
+    private ChatList chatList;
+    //private BroadcastReceiver mBroadcastReceiver;
     private static final int MULTIPLE_PERMISSIONS = 12;
     private int ACTION = 0;
     private MediaRecorder mediaRecorder;
     private String audioSavePathInDevice;
     private boolean isRecording = false;
-
-    private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
-
+    private String ServerUploadPath;
     private ArrayList<Image> images = new ArrayList<>();
-
-    ImageButton emoji;
-    ImageButton attachment;
-
+    private String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
+    private ImageButton emoji;
+    private ImageButton attachment;
     private MessageViewModel viewModel;
-
-    HttpParse httpParse = new HttpParse();
-    String HttpURL;
+    private HttpParse httpParse = new HttpParse();
+    private String HttpURL;
+    private String upLoadServerUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +138,6 @@ public class Chat3 extends AppCompatActivity {
         LinearLayout input = findViewById(R.id.form);
 
         session = new SessionManager(getBaseContext());
-        nameofuser = session.getPhoneNumber();
 
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
@@ -221,25 +232,26 @@ public class Chat3 extends AppCompatActivity {
             chat.setData("Welcome to Letstalk");
             adapter.swapItem(chat);
             recyclerView.smoothScrollToPosition(adapter.getItemCount());
+        }else {
+            viewModel = ViewModelProviders.of(this).get(MessageViewModel.class);
+            viewModel.getMessages(contactJid);
+            viewModel.getMessagesList().observe(this, new Observer<List<Messages>>() {
+                @Override
+                public void onChanged(List<Messages> messages) {
+                    adapter.swapItems(messages);
+                    recyclerView.smoothScrollToPosition(adapter.getItemCount());
+                }
+            });
+
+            HTTP_JSON_URL = "https://globeexservices.com/letstalk/messages.php/?frnd=" + contactJid + "&user=" + myJid + "";
+            HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd=" + contactJid + "&user=" + myJid + "";
+            upLoadServerUri = "https://globeexservices.com/letstalk/audiomessages/audio.php/?user=" + myJid + "&frnd=" + contactJid + "";
+            ServerUploadPath = "https://globeexservices.com/letstalk/sendimage.php";
         }
-
-        viewModel = ViewModelProviders.of(this).get(MessageViewModel.class);
-        viewModel.getMessages(contactJid);
-        viewModel.getMessagesList().observe(this, new Observer<List<Messages>>() {
-            @Override
-            public void onChanged(List<Messages> messages) {
-                adapter.swapItems(messages);
-                recyclerView.smoothScrollToPosition(adapter.getItemCount());
-            }
-        });
-
-
-        String HTTP_JSON_URL = "https://globeexservices.com/letstalk/Messages.php/?frnd="+contactJid+"&user="+myJid+"";
-        HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd="+contactJid+"&user="+myJid+"";
     }
 
     public void sendTextMessage(View v) {
-        String message = mMsgEditText.getEditableText().toString();
+        String message = mMsgEditText.getText().toString();
 
         if (!TextUtils.isEmpty(message)) {
             mMsgEditText.setText("");
@@ -270,14 +282,9 @@ public class Chat3 extends AppCompatActivity {
         }
     }
 
-    public void sendTextRemote(Messages messages){
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("Messages", messages.getData());
-        hashMap.put("sender", messages.getMyId());
-        hashMap.put("reciever", messages.getRemoteId());
-
+    private void sendTextRemote(Messages messages) {
         SendMessageClass sendMessageClass = new SendMessageClass();
-        sendMessageClass.execute(hashMap);
+        sendMessageClass.execute(messages);
     }
 
     private void sendAudio() {
@@ -296,17 +303,14 @@ public class Chat3 extends AppCompatActivity {
         }
     }
 
-    public void sendAudioRemote(Messages messages){
-//        HashMap<String, String> hashMap = new HashMap<>();
-//        hashMap.put("Messages", messages.getData());
-//        hashMap.put("sender", messages.getMyId());
-//        hashMap.put("reciever", messages.getRemoteId());
-//
-//        SendMessageClass sendMessageClass = new SendMessageClass();
-//        sendMessageClass.execute(hashMap);
+    public void sendAudioRemote(Messages messages) {
+        SendAudioClass sendAudioClass = new SendAudioClass();
+        sendAudioClass.execute(messages);
     }
 
     public void sendImageMessage(String caption, List<Image> images) {
+        //String image = bitmapToBase64(BitmapFactory.decodeFile(images.get(0).getPath()));
+
         Messages chat = new Messages();
         chat.setRemoteId(contactJid);
         chat.setMyId(myJid);
@@ -321,18 +325,25 @@ public class Chat3 extends AppCompatActivity {
         sendImageRemote(chat); //send to server
     }
 
-    public void sendImageRemote(Messages messages){
-//        HashMap<String, String> hashMap = new HashMap<>();
-//        hashMap.put("Messages", messages.getData());
-//        hashMap.put("sender", messages.getMyId());
-//        hashMap.put("reciever", messages.getRemoteId());
-//
-//        SendMessageClass sendMessageClass = new SendMessageClass();
-//        sendMessageClass.execute(hashMap);
+    public void sendImageRemote(Messages messages) {
+        SendImageClass sendImageClass = new SendImageClass();
+        sendImageClass.execute(messages);
+    }
+
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    private Bitmap base64ToBitmap(String b64) {
+        byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
     }
 
     @SuppressLint("StaticFieldLeak")
-    class SendMessageClass extends AsyncTask<HashMap, Void, String> {
+    class SendMessageClass extends AsyncTask<Messages, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -340,15 +351,201 @@ public class Chat3 extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(HashMap... params) {
-            HashMap<String, String> hashMap = (HashMap<String, String>) params[0];
-            return httpParse.postRequest(hashMap, HttpURL);
+        protected String doInBackground(Messages... params) {
+            Messages messages = params[0];
+
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("messages", messages.getData());
+            hashMap.put("sender", messages.getMyId());
+            hashMap.put("reciever", messages.getRemoteId());
+
+            return httpParse.postRequest(HttpURL, hashMap);
         }
+
         @Override
         protected void onPostExecute(String httpResponseMsg) {
             super.onPostExecute(httpResponseMsg);
             // JSON_HTTP_CALL2();
         }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class SendImageClass extends AsyncTask<Messages, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String string1) {
+            super.onPostExecute(string1);
+        }
+
+        @Override
+        protected String doInBackground(Messages... params) {
+            Messages messages = params[0];
+
+            Bitmap bitmap = BitmapFactory.decodeFile(messages.getImage());
+            final String ConvertImage = bitmapToBase64(bitmap);
+
+            HashMap<String, String> HashMapParams = new HashMap<String, String>();
+            HashMapParams.put("image_name", messages.getMyId());
+            HashMapParams.put("imgstatus", messages.getRemoteId());
+            HashMapParams.put("image_path", ConvertImage);
+
+            return imageHttpRequest(ServerUploadPath, HashMapParams);
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class SendAudioClass extends AsyncTask<Messages, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+        @Override
+        protected Boolean doInBackground(Messages... params) {
+            Messages messages = params[0];
+
+            try {
+                String sourceFileUri = messages.getAudio();
+                String lineEnd = "\r\n";
+                String twoHyphens = "--";
+                String boundary = "*****";
+                int bytesRead, bytesAvailable, bufferSize;
+                byte[] buffer;
+                int maxBufferSize = 1024 * 1024;
+                File sourceFile = new File(sourceFileUri);
+
+                if (sourceFile.isFile()) {
+                    try {
+
+                        // open a URL connection to the Servlet
+                        FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                        URL url = new URL(upLoadServerUri);
+                        // Open a HTTP connection to the URL
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoInput(true); // Allow Inputs
+                        conn.setDoOutput(true); // Allow Outputs
+                        conn.setUseCaches(false); // Don't use a Cached Copy
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Connection", "Keep-Alive");
+                        conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                        conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                        conn.setRequestProperty("bill", sourceFileUri);
+
+                        DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+                        dos.writeBytes(twoHyphens + boundary + lineEnd);
+                        dos.writeBytes("Content-Disposition: form-data; name=\"bill\";filename=\"" + sourceFileUri + "\"" + lineEnd);
+                        dos.writeBytes(lineEnd);
+
+                        // create a buffer of maximum size
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        buffer = new byte[bufferSize];
+
+                        // read file and write it into form...
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                        while (bytesRead > 0) {
+                            dos.write(buffer, 0, bufferSize);
+                            bytesAvailable = fileInputStream.available();
+                            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                        }
+
+                        // send multipart form data necesssary after file
+                        // data...
+                        dos.writeBytes(lineEnd);
+                        dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                        // Responses from the server (code and message)
+                        int serverResponseCode = conn.getResponseCode();
+                        String serverResponseMessage = conn.getResponseMessage();
+
+                        if (serverResponseCode == 200) {
+                            // recursiveDelete(mDirectory1);
+                        }
+
+                        // close the streams //
+                        fileInputStream.close();
+                        dos.flush();
+                        dos.close();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } // End else block
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //JSON_HTTP_CALL(1);
+        }
+
+    }
+
+
+    private String imageHttpRequest(String requestURL, HashMap<String, String> PData) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            URL url = new URL(requestURL);
+            HttpURLConnection httpURLConnectionObject = (HttpURLConnection) url.openConnection();
+            httpURLConnectionObject.setReadTimeout(19000);
+            httpURLConnectionObject.setConnectTimeout(19000);
+            httpURLConnectionObject.setRequestMethod("POST");
+            httpURLConnectionObject.setDoInput(true);
+            httpURLConnectionObject.setDoOutput(true);
+
+            OutputStream OutPutStream = httpURLConnectionObject.getOutputStream();
+            BufferedWriter bufferedWriterObject = new BufferedWriter(new OutputStreamWriter(OutPutStream, "UTF-8"));
+            bufferedWriterObject.write(bufferedWriterDataFN(PData));
+            bufferedWriterObject.flush();
+            bufferedWriterObject.close();
+            OutPutStream.close();
+
+            int RC = httpURLConnectionObject.getResponseCode();
+
+            if (RC == HttpsURLConnection.HTTP_OK) {
+                BufferedReader bufferedReaderObject = new BufferedReader(new InputStreamReader(httpURLConnectionObject.getInputStream()));
+                String RC2;
+                while ((RC2 = bufferedReaderObject.readLine()) != null) {
+                    stringBuilder.append(RC2);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
+    private String bufferedWriterDataFN(HashMap<String, String> HashMapParams) throws UnsupportedEncodingException {
+        StringBuilder stringBuilderObject;
+        stringBuilderObject = new StringBuilder();
+        boolean isFirst = true;
+
+        for (Map.Entry<String, String> KEY : HashMapParams.entrySet()) {
+            if (isFirst) isFirst = false;
+            else stringBuilderObject.append("&");
+
+            stringBuilderObject.append(URLEncoder.encode(KEY.getKey(), "UTF-8"));
+            stringBuilderObject.append("=");
+            stringBuilderObject.append(URLEncoder.encode(KEY.getValue(), "UTF-8"));
+        }
+
+        return stringBuilderObject.toString();
     }
 
 
@@ -451,7 +648,7 @@ public class Chat3 extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-      //  unregisterReceiver(mBroadcastReceiver);
+        //  unregisterReceiver(mBroadcastReceiver);
         if (mediaRecorder != null) {
             enableAllViews();
             mediaRecorder.release();
@@ -581,9 +778,9 @@ public class Chat3 extends AppCompatActivity {
         //imagePicker.multi(); // multi mode (default mode)
         imagePicker.exclude(images); // don't show anything on this selected images
         imagePicker.limit(2) // max images can be selected (99 by default)
-                 .showCamera(showCamera) // show camera or not (true by default)
-                 .imageDirectory("Camera")   // captured image directory name ("Camera" folder by default)
-                 .imageFullDirectory(Environment.getExternalStorageDirectory().getPath()) // can be full path
+                .showCamera(showCamera) // show camera or not (true by default)
+                .imageDirectory("Camera")   // captured image directory name ("Camera" folder by default)
+                .imageFullDirectory(Environment.getExternalStorageDirectory().getPath()) // can be full path
                 .start();
     }
 

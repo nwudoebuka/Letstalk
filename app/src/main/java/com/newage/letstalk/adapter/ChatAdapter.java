@@ -1,11 +1,17 @@
 package com.newage.letstalk.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,21 +24,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.newage.letstalk.R;
+import com.newage.letstalk.activity.FullImageView;
 import com.newage.letstalk.dataLayer.local.tables.Messages;
 import com.newage.letstalk.interfaces.ChatMessage;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private List<Messages> chatTypes = new ArrayList<>();
 
-    public ChatAdapter() { }
+    public ChatAdapter() {
+    }
 
     public void addItems(List<Messages> newItems) {
         if (newItems == null) return;
 
-        if(chatTypes == null)
+        if (chatTypes == null)
             chatTypes = new ArrayList<>();
 
         chatTypes.addAll(newItems);
@@ -44,7 +53,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public void swapItems(List<Messages> newItem) {
         if (newItem == null) return;
 
-        if(chatTypes == null)
+        if (chatTypes == null)
             chatTypes = new ArrayList<>();
 
         chatTypes.clear();
@@ -66,7 +75,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public void swapItem(Messages newItem) {
         if (newItem == null) return;
 
-        if(chatTypes == null)
+        if (chatTypes == null)
             chatTypes = new ArrayList<>();
 
         chatTypes.clear();
@@ -76,7 +85,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         this.notifyDataSetChanged();
     }
 
-    public void releaseResources(){
+    public void releaseResources() {
 
     }
 
@@ -122,7 +131,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     public class FriendChatItemViewHolder extends ViewHolder implements View.OnClickListener, View.OnTouchListener,
-    MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener{
+            MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener {
         TextView mMessageTextView;
         ImageView mMessageImageView;
         RelativeLayout mAudioLayout;
@@ -150,20 +159,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         @Override
         public void bindType(Messages chat) {
 
-            if(!TextUtils.isEmpty(chat.getData())) {
+            if (!TextUtils.isEmpty(chat.getData())) {
                 mMessageTextView.setText(chat.getData());
                 mMessageTextView.setVisibility(View.VISIBLE);
             }
 
-            if(!TextUtils.isEmpty(chat.getImage())) {
+            if (!TextUtils.isEmpty(chat.getImage())) {
                 mMessageImageView.setVisibility(View.VISIBLE);
+//                assert chat.getImage() != null;
+//                Glide.with(mMessageImageView).load(base64ToBitmap(chat.getImage()))
+//                        .placeholder(R.drawable.ic_image_placeholder)
+//                        .error(R.drawable.ic_broken_image)
+//                        .into(mMessageImageView);
+
                 Glide.with(mMessageImageView).load(chat.getImage())
                         .placeholder(R.drawable.ic_image_placeholder)
                         .error(R.drawable.ic_broken_image)
                         .into(mMessageImageView);
             }
 
-            if(chat.getAudio() != null){
+            if (chat.getAudio() != null) {
                 mAudioLayout.setVisibility(View.VISIBLE);
                 mSeekBar.setMax(99);
                 mSeekBar.setOnTouchListener(this);
@@ -180,14 +195,35 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                     e.printStackTrace();
                 }
             }
-
         }
+
+//        private Bitmap base64ToBitmap(String b64) {
+//            byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
+//            return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+//        }
+
+
+//        private String bitmapToBase64(Bitmap bitmap) {
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+//            byte[] byteArray = byteArrayOutputStream.toByteArray();
+//            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+//        }
 
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.upload_play) {
                 playAudio();
+            }else if(v.getId() == R.id.message_image){
+                viewImage(v);
             }
+        }
+
+        private void viewImage(View v){
+            Messages messages = chatTypes.get(getAdapterPosition());
+            Intent i = new Intent(v.getContext(), FullImageView.class);
+            i.putExtra("image", messages.getImage());
+            v.getContext().startActivity(i);
         }
 
         private void playAudio() {
@@ -273,20 +309,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         @Override
         public void bindType(Messages chat) {
 
-            if(!TextUtils.isEmpty(chat.getData())) {
+            if (!TextUtils.isEmpty(chat.getData())) {
                 mMessageTextView.setText(chat.getData());
                 mMessageTextView.setVisibility(View.VISIBLE);
             }
 
-            if(!TextUtils.isEmpty(chat.getImage())) {
+            if (!TextUtils.isEmpty(chat.getImage())) {
                 mMessageImageView.setVisibility(View.VISIBLE);
+//                assert chat.getImage() != null;
+//                Glide.with(mMessageImageView).load(base64ToBitmap(chat.getImage()))
+//                        .placeholder(R.drawable.ic_image_placeholder)
+//                        .error(R.drawable.ic_broken_image)
+//                        .into(mMessageImageView);
+
                 Glide.with(mMessageImageView).load(chat.getImage())
                         .placeholder(R.drawable.ic_image_placeholder)
                         .error(R.drawable.ic_broken_image)
                         .into(mMessageImageView);
             }
 
-            if(chat.getAudio() != null){
+            if (chat.getAudio() != null) {
                 mAudioLayout.setVisibility(View.VISIBLE);
                 mSeekBar.setMax(99);
                 mSeekBar.setOnTouchListener(this);
@@ -306,11 +348,25 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         }
 
+//        private Bitmap base64ToBitmap(String b64) {
+//            byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
+//            return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+//        }
+
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.upload_play) {
                 playAudio();
+            }else if(v.getId() == R.id.message_image){
+                viewImage(v);
             }
+        }
+
+        private void viewImage(View v){
+            Messages messages = chatTypes.get(getAdapterPosition());
+            Intent i = new Intent(v.getContext(), FullImageView.class);
+            i.putExtra("image", messages.getImage());
+            v.getContext().startActivity(i);
         }
 
         private void playAudio() {
@@ -362,7 +418,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             /** MediaPlayer onCompletion event handler. Method which calls then song playing is complete*/
             //mUploadPlay.setImageResource(R.drawable.playaudio);
             mUploadPlay.setBackgroundResource(R.drawable.ic_play);
-           // mSeekBar.setProgress(1);
+            // mSeekBar.setProgress(1);
         }
     }
 

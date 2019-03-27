@@ -60,4 +60,8 @@ public class DashboardViewModel extends AndroidViewModel {
     public void refreshFriendList(){
         repository.refreshFriendList(session.getPhoneNumber());
     }
+
+    public void logout(){
+        repository.deleteFriend();
+    }
 }

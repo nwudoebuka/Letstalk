@@ -20,6 +20,7 @@ import java.util.Random;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+@Deprecated
 public class AudioRecordActivity extends AppCompatActivity {
 
     Button buttonStart, buttonStop ;

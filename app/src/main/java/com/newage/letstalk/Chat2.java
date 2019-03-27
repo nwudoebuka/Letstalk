@@ -81,10 +81,10 @@ import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
-
+@Deprecated
 public class Chat2 extends AppCompatActivity {
 
-    private static final String TAG = Sendimage.class.getSimpleName();
+    private static final String TAG = Chat2.class.getSimpleName();
     CheckBox mCheckBox;
     EmojiconEditText emojiconEditText;
     EmojiconTextView textView;
@@ -110,10 +110,6 @@ public class Chat2 extends AppCompatActivity {
     String HttpURLdisauto = "https://globeexservices.com/letstalk/disableautoresponder.php";
     String ServerUploadPath ="https://globeexservices.com/letstalk/sendimage.php" ;
     boolean check = true;
-    //String Image_Name_JSON = "Messages";
-    //String Image_Sender_JSON = "sender";
-    //String Image_audio_JSON = "audio";
-    //String Image_video_JSON = "video";
     String audio_url;
     String Image_URL_JSON = "dp";
     private ProgressDialog pDialog;
@@ -122,33 +118,21 @@ public class Chat2 extends AppCompatActivity {
     RequestQueue requestQueue ;
     ImageButton image, audio;
     View view ;
-    // Save state
-//    private Parcelable recyclerViewState;
-
     int RecyclerViewItemPosition ;
-
     RecyclerView.LayoutManager layoutManagerOfrecyclerView;
-
     RecyclerView.Adapter recyclerViewadapter;
-//    LinearLayout lin;
 
     ArrayList<String> ImageTitleNameArrayListForClick;
     ArrayList<String> messagetypearray;
     ArrayList<String> audio_url_array;
     ArrayList<String> image_url_array;
 
-
     String user,img,phone,nameofuser;
-//    String stringaudio;
     TextView username,userphone,prog;
     CircleImageView imageView;
     SessionManager session;
-//    ImageButton imageButtonsend;
     public int alenght,blenght, newalenght;
     int RQS_RECORDING;
-//    Button register, log_in;
-//    EditText First_Name, Last_Name, Email, Password ;
-//    String F_Name_Holder, L_Name_Holder, EmailHolder, PasswordHolder;
     String finalResult ;
     public static  String HttpURL = "";
     Boolean CheckEditText ;
@@ -278,15 +262,7 @@ public class Chat2 extends AppCompatActivity {
         }
 
         session = new SessionManager(getBaseContext());
-
-        /**
-         * Call this function whenever you want to check user login
-         * This will redirect user to LoginActivity is he is not
-         * logged in
-         * */
-//        session.checkLogin();
-        HashMap<String, String> user = session.getUserDetails();
-        nameofuser = user.get(SessionManager.KEY_NAME);
+        nameofuser = session.getPhoneNumber();
 
         HTTP_JSON_URL = "https://globeexservices.com/letstalk/Messages.php/?frnd="+phone+"&user="+nameofuser+"";
         HttpURL = "https://globeexservices.com/letstalk/sendmessage.php/?frnd="+phone+"&user="+nameofuser+"";
@@ -432,9 +408,9 @@ public class Chat2 extends AppCompatActivity {
                 hashMap.put("Messages",params[0]);
                 hashMap.put("sender",params[1]);
                 hashMap.put("reciever",params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-                return finalResult;
+                return httpParse.postRequest(HttpURL, hashMap);
             }
+
             @Override
             protected void onPostExecute(String httpResponseMsg) {
                 super.onPostExecute(httpResponseMsg);
@@ -462,17 +438,14 @@ public class Chat2 extends AppCompatActivity {
                 // Great! ChatList has recorded and saved the audio file
                 result = data.getStringExtra("result");
 
-                Toast.makeText(Chat2.this,
-                        "Saved: " + result,
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(Chat2.this, "Saved: " + result, Toast.LENGTH_LONG).show();
                 if(result == null){}else {
                     new UploadFileAsync().execute("");
                 }
 
                 Log.d("debug", "Saved Path::" + result);
-
-
             }
+
             if (resultCode == Activity.RESULT_CANCELED) {
                 // Oops! ChatList has canceled the recording / back button
             }
@@ -538,7 +511,6 @@ public class Chat2 extends AppCompatActivity {
 
             @Override
             protected void onPreExecute() {
-
                 super.onPreExecute();
                 prog.setText("sending");
                 Toast.makeText(Chat2.this,"sending image",Toast.LENGTH_LONG).show();
@@ -546,37 +518,25 @@ public class Chat2 extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(String string1) {
-
                 super.onPostExecute(string1);
                 prog.setText("sending");
                 Toast.makeText(Chat2.this,string1,Toast.LENGTH_LONG).show();
                 progressBarimage.setVisibility(View.GONE);
-
-
-
             }
-
-
 
             @Override
             protected String doInBackground(Void... params) {
-
                 Chat2.ImageProcessClass imageProcessClass = new Chat2.ImageProcessClass();
-
                 HashMap<String,String> HashMapParams = new HashMap<String,String>();
-
                 HashMapParams.put(ImageName, nameofuser);
                 HashMapParams.put(imgstatus, phone);
-
                 HashMapParams.put(ImagePath, ConvertImage);
-
                 String FinalData = imageProcessClass.ImageHttpRequest(ServerUploadPath, HashMapParams);
-
                 return FinalData;
             }
         }
-        AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
 
+        AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
         AsyncTaskUploadClassOBJ.execute();
     }
 
@@ -671,6 +631,7 @@ public class Chat2 extends AppCompatActivity {
         }
 
     }
+
 //    @Override
 //    protected void onSaveInstanceState(Bundle outState) {
 //        super.onSaveInstanceState(outState);
@@ -691,110 +652,14 @@ public class Chat2 extends AppCompatActivity {
 //
 //    }
 
+
     public void CheckEditTextIsEmptyOrNot(){
-
         Message_Holder =  emojiconEditText.getText().toString();
-
-
-
-
-
-        if(TextUtils.isEmpty(Message_Holder))
-        {
-
+        if(TextUtils.isEmpty(Message_Holder)) {
             CheckEditText = false;
-
-        }
-        else {
-
+        } else {
             CheckEditText = true ;
         }
-
-    }
-
-    public void JSON_HTTP_CALL(final int loop){
-
-        RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL,
-
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-
-                        ParseJSonResponse(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
-
-        requestQueue = Volley.newRequestQueue(Chat2.this);
-
-        requestQueue.add(RequestOfJSonArray);
-//        if(loop == 0) {
-//            //Declare the timer
-//            Timer t = new Timer();
-////Set the schedule function and rate
-//            t.scheduleAtFixedRate(new TimerTask() {
-//                                      @Override
-//                                      public void run() {
-//                                          //Called each time when 1000 milliseconds (1 second) (the period parameter)
-//                                          JSON_HTTP_CALL3();
-//                                      }
-//
-//                                  },
-////Set how long before to start calling the TimerTask (in milliseconds)
-//                    0,
-////Set the amount of time between each execution (in milliseconds)
-//                    5000);
-//        }
-    }
-
-    public void ParseJSonResponse(JSONArray array){
-        ListOfdataAdapter.clear();
-        ImageTitleNameArrayListForClick.clear();
-
-        for(int i = 0; i<array.length(); i++) {
-
-            DataAdapter GetDataAdapter2 = new DataAdapter();
-
-            JSONObject json = null;
-            try {
-
-                json = array.getJSONObject(i);
-
-                GetDataAdapter2.setImageTitle(json.getString("Messages"));
-                GetDataAdapter2.setImageSender(json.getString("sender"));
-                GetDataAdapter2.setsession(nameofuser);
-                GetDataAdapter2.setImageaudio(json.getString("audio"));
-                GetDataAdapter2.setImagevideo(json.getString("video"));
-
-                // Adding image title name in array to display on RecyclerView click event.
-                ImageTitleNameArrayListForClick.add(json.getString("Messages"));
-                messagetypearray.add(json.getString("Messages"));
-                audio_url_array.add(json.getString("audio"));
-                image_url_array.add(json.getString(Image_URL_JSON));
-                audio_url = json.getString("audio");
-
-                GetDataAdapter2.setImageUrl(json.getString(Image_URL_JSON));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            ListOfdataAdapter.add(GetDataAdapter2);
-        }
-        progressBar.setVisibility(View.GONE);
-        recyclerViewadapter = new RecyclerViewAdapter(ListOfdataAdapter, this);
-
-        recyclerView.setAdapter(recyclerViewadapter);
-        Updatearray firstarray = new Updatearray();
-        firstarray.setfirst(array.length());
-        alenght = firstarray.first();
-
-//        int last = recyclerView.getAdapter().getItemCount()-1;
-//        recyclerView.smoothScrollToPosition(last);
-//        recyclerViewadapter.notifyDataSetChanged();
     }
 
 
@@ -831,27 +696,49 @@ public class Chat2 extends AppCompatActivity {
 
     }
 
-    public void JSON_HTTP_CALL2(){
+    public void ParseJSonResponse(JSONArray array){
+        ListOfdataAdapter.clear();
+        ImageTitleNameArrayListForClick.clear();
 
-        RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL,
+        for(int i = 0; i<array.length(); i++) {
 
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
+            DataAdapter GetDataAdapter2 = new DataAdapter();
 
-                        ParseJSonResponse2(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+            JSONObject json = null;
+            try {
 
-        requestQueue = Volley.newRequestQueue(Chat2.this);
+                json = array.getJSONObject(i);
 
-        requestQueue.add(RequestOfJSonArray);
+                GetDataAdapter2.setImageTitle(json.getString("Messages"));
+                GetDataAdapter2.setImageSender(json.getString("sender"));
+                GetDataAdapter2.setsession(nameofuser);
+                GetDataAdapter2.setImageaudio(json.getString("audio"));
+                GetDataAdapter2.setImagevideo(json.getString("video"));
+
+                // Adding image title name in array to display on RecyclerView click event.
+                ImageTitleNameArrayListForClick.add(json.getString("Messages"));
+                messagetypearray.add(json.getString("Messages"));
+                audio_url_array.add(json.getString("audio"));
+                image_url_array.add(json.getString("dp"));
+                audio_url = json.getString("audio");
+                GetDataAdapter2.setImageUrl(json.getString("dp"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ListOfdataAdapter.add(GetDataAdapter2);
+        }
+        progressBar.setVisibility(View.GONE);
+        recyclerViewadapter = new RecyclerViewAdapter(ListOfdataAdapter, this);
+
+        recyclerView.setAdapter(recyclerViewadapter);
+        Updatearray firstarray = new Updatearray();
+        firstarray.setfirst(array.length());
+        alenght = firstarray.first();
+
+//        int last = recyclerView.getAdapter().getItemCount()-1;
+//        recyclerView.smoothScrollToPosition(last);
+//        recyclerViewadapter.notifyDataSetChanged();
     }
 
     public void ParseJSonResponse2(JSONArray array2){
@@ -905,7 +792,9 @@ public class Chat2 extends AppCompatActivity {
         Toast.makeText(Chat2.this, String.valueOf(newalenght), Toast.LENGTH_LONG).show();
     }
 
-    public void JSON_HTTP_CALL3(){
+
+
+    public void JSON_HTTP_CALL(final int loop){
 
         RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL,
 
@@ -913,7 +802,7 @@ public class Chat2 extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
 
-                        ParseJSonResponse3(response);
+                        ParseJSonResponse(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -926,7 +815,62 @@ public class Chat2 extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(Chat2.this);
 
         requestQueue.add(RequestOfJSonArray);
+//        if(loop == 0) {
+//            //Declare the timer
+//            Timer t = new Timer();
+////Set the schedule function and rate
+//            t.scheduleAtFixedRate(new TimerTask() {
+//                                      @Override
+//                                      public void run() {
+//                                          //Called each time when 1000 milliseconds (1 second) (the period parameter)
+//                                          JSON_HTTP_CALL3();
+//                                      }
+//
+//                                  },
+////Set how long before to start calling the TimerTask (in milliseconds)
+//                    0,
+////Set the amount of time between each execution (in milliseconds)
+//                    5000);
+//        }
     }
+
+    public void JSON_HTTP_CALL2(){
+        RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        ParseJSonResponse2(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+
+        requestQueue = Volley.newRequestQueue(Chat2.this);
+        requestQueue.add(RequestOfJSonArray);
+    }
+
+    public void JSON_HTTP_CALL3(){
+        RequestOfJSonArray = new JsonArrayRequest(HTTP_JSON_URL, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        ParseJSonResponse3(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+        requestQueue = Volley.newRequestQueue(Chat2.this);
+        requestQueue.add(RequestOfJSonArray);
+    }
+
+
+
 
     public void ParseJSonResponse3(JSONArray array3){
 //        ListOfdataAdapter.clear();
@@ -1074,9 +1018,7 @@ public class Chat2 extends AppCompatActivity {
 
                 hashMap.put("user",params[0]);
                 hashMap.put("message",params[1]);
-                finalResult = httpParse.postRequest(hashMap, HttpURLauto);
-
-                return finalResult;
+                return httpParse.postRequest(HttpURLauto, hashMap);
             }
         }
 
@@ -1116,17 +1058,12 @@ public class Chat2 extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... params) {
-
                 hashMap.put("user",params[0]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURLdisauto);
-
-                return finalResult;
+                return httpParse.postRequest(HttpURLdisauto, hashMap);
             }
         }
 
         UserRegisterFunctionClassdisauto userRegisterFunctionClassdisauto = new UserRegisterFunctionClassdisauto();
-
         userRegisterFunctionClassdisauto.execute(Phone);
     }
 
@@ -1265,6 +1202,7 @@ public class Chat2 extends AppCompatActivity {
         protected void onProgressUpdate(Void... values) {
         }
     }
+
     public void Refresh(){
 
         String nam = user;

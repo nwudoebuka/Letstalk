@@ -34,7 +34,7 @@ public class MessageViewModel extends AndroidViewModel {
             @Override
             public LiveData<List<Messages>> apply(String input) {
 
-                LiveData<List<Messages>> resLiveData = repository.getMessages(input);
+                LiveData<List<Messages>> resLiveData = repository.getMessages(input, session.getPhoneNumber());
                 final MediatorLiveData<List<Messages>> mediator = new MediatorLiveData<>();
                 mediator.addSource(resLiveData, new Observer<List<Messages>>() {
                     @Override

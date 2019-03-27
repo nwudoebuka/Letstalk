@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
@@ -16,20 +17,19 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.newage.letstalk.activity.Dashboard;
 
 import java.util.HashMap;
 
 public class Sms extends AppCompatActivity {
-ImageButton add;
+    ImageButton add;
     TextView num;
     public int REQUESTCODE = 1;
     String finalResult, msgs, nums;
     String HttpURLin = "https://globeexservices.com/letstalk/freesms.php";
-    Boolean CheckEditText ;
+    Boolean CheckEditText;
     ProgressDialog progressDialog;
-    HashMap<String,String> hashMap = new HashMap<>();
+    HashMap<String, String> hashMap = new HashMap<>();
     HttpParse httpParse = new HttpParse();
     Button send;
     EditText msg;
@@ -46,7 +46,7 @@ ImageButton add;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contact);
         setSupportActionBar(toolbar);
 
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,29 +71,23 @@ ImageButton add;
                 startActivityForResult(intent, REQUESTCODE);
             }
         });
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkempty();
-
             }
         });
     }
 
-public void checkempty(){
-    msgs = msg.getText().toString();
-    if (nums != null && !nums.isEmpty() && !nums.equals("null") && msgs != null && !msgs.isEmpty() && !msgs.equals("null")){
-        UserRegisterFunctionmsg(nums,msgs);
-
-    }else{
-
-
-        Toast.makeText(Sms.this,"Please fill all fields", Toast.LENGTH_LONG).show();
+    public void checkempty() {
+        msgs = msg.getText().toString();
+        if (nums != null && !nums.isEmpty() && !nums.equals("null") && msgs != null && !msgs.isEmpty() && !msgs.equals("null")) {
+            UserRegisterFunctionmsg(nums, msgs);
+        } else {
+            Toast.makeText(Sms.this, "Please fill all fields", Toast.LENGTH_LONG).show();
+        }
     }
-
-
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -108,10 +102,10 @@ public void checkempty(){
                 try {
                     c = Sms.this.getContentResolver()
                             .query(uri,
-                                    new String[] {
+                                    new String[]{
                                             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                                             ContactsContract.CommonDataKinds.Phone.NUMBER,
-                                            ContactsContract.CommonDataKinds.Phone.TYPE },
+                                            ContactsContract.CommonDataKinds.Phone.TYPE},
                                     null, null, null);
 
                     if (c != null && c.moveToFirst()) {
@@ -130,62 +124,43 @@ public void checkempty(){
         }
     }
 
-
     public void showSelectedNumber(String name, String number, int type) {
 //        TextView userNumber = (TextView) findViewById(R.id.textViewc2);
         String typeNumber = (String) ContactsContract.CommonDataKinds.Phone
                 .getTypeLabel(getResources(), type, "");
-        num.setText("to "+ number +"");
+        num.setText("to " + number + "");
         nums = number;
 //        userNumber.setText(name + ": " + number + " " + typeNumber);
-
-
     }
 
-
-
-    public void UserRegisterFunctionmsg(final String Phonemsg,final String Message){
-
-        class UserRegisterFunctionClass extends AsyncTask<String,Void,String> {
+    public void UserRegisterFunctionmsg(final String Phonemsg, final String Message) {
+        class UserRegisterFunctionClass extends AsyncTask<String, Void, String> {
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-
-                progressDialog = ProgressDialog.show(Sms.this,"Sending...",null,true,true);
+                progressDialog = ProgressDialog.show(Sms.this, "Sending...", null, true, true);
                 progressDialog.setCancelable(false);
                 progressDialog.setCanceledOnTouchOutside(false);
             }
 
             @Override
             protected void onPostExecute(String httpResponseMsg) {
-
                 super.onPostExecute(httpResponseMsg);
-
-               progressDialog.dismiss();
+                progressDialog.dismiss();
                 msg.setText("");
-                Toast.makeText(Sms.this,httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
-
-
-
-
+                Toast.makeText(Sms.this, httpResponseMsg.toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
             protected String doInBackground(String... params) {
-
-                hashMap.put("phone",params[0]);
-                hashMap.put("message",params[1]);
-
-                finalResult = httpParse.postRequest(hashMap, HttpURLin);
-
-                return finalResult;
+                hashMap.put("phone", params[0]);
+                hashMap.put("message", params[1]);
+                return httpParse.postRequest(HttpURLin, hashMap);
             }
         }
 
         UserRegisterFunctionClass userRegisterFunctionClass = new UserRegisterFunctionClass();
-
-        userRegisterFunctionClass.execute(Phonemsg,Message);
+        userRegisterFunctionClass.execute(Phonemsg, Message);
     }
-
 }

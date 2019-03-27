@@ -523,8 +523,7 @@ public class Register extends AppCompatActivity {
                 hashMap.put("name", params[0]);
                 hashMap.put("phone", params[1]);
                 hashMap.put("otp", params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURLr);
-                return finalResult;
+                return httpParse.postRequest(HttpURLr, hashMap);
             }
         }
 
@@ -664,13 +663,10 @@ public class Register extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... params) {
-
                 hashMap.put("phone", params[0]);
                 hashMap.put("user", params[1]);
                 hashMap.put("name", params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURLp);
-
-                return finalResult;
+                return httpParse.postRequest(HttpURLp, hashMap);
             }
         }
 
@@ -717,11 +713,8 @@ public class Register extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... params) {
-
                 hashMap.put("user", params[0]);
-                finalResult = httpParse.postRequest(hashMap, HttpURLd);
-
-                return finalResult;
+                return httpParse.postRequest(HttpURLd, hashMap);
             }
         }
 

@@ -14,11 +14,11 @@ import androidx.room.Update;
 @Dao
 public interface MessagesDao {
 
-    @Query("SELECT * FROM messages WHERE key_remote_jid = :friendId")
-    List<Messages> getItems(String friendId);
+    @Query("SELECT * FROM messages WHERE key_remote_jid = :friendId AND key_id = :me")
+    List<Messages> getItems(String friendId, String me);
 
-    @Query("SELECT * FROM messages WHERE key_remote_jid = :friendId")
-    LiveData<List<Messages>> getItemsLive(String friendId);
+    @Query("SELECT * FROM messages WHERE key_remote_jid = :friendId AND key_id = :me")
+    LiveData<List<Messages>> getItemsLive(String friendId, String me);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertItem(Messages message);
@@ -32,8 +32,14 @@ public interface MessagesDao {
     @Update
     int updateItems(Messages... messages);
 
-    @Query("DELETE FROM messages WHERE key_remote_jid = :friendId")
-    int deleteItemsByRemoteId(String friendId);
+    @Query("UPDATE messages SET status = :status WHERE id = :id")
+    int updateSatus(long id, int status);
+
+    @Query("UPDATE messages SET needs_push = :push WHERE id = :id")
+    int updateNeedPush(long id, boolean push);
+
+    @Query("DELETE FROM messages WHERE key_remote_jid = :friendId AND key_id = :me")
+    int deleteItemsByRemoteId(String friendId, String me);
 
     @Query("DELETE FROM messages")
     void deleteAllItems();

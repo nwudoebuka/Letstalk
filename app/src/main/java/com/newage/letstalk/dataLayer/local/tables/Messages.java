@@ -12,7 +12,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Messages")
+@Entity(tableName = "messages")
 public final class Messages implements ChatMessage, Serializable {
 
     @PrimaryKey(autoGenerate = true)

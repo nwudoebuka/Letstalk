@@ -57,7 +57,6 @@ import retrofit2.Response;
 
 public class FriendListTabFragment extends Fragment implements FriendListAdapter.FriendClickListener {
     public int REQUESTCODE = 1;
-    String finalResult;
     String HttpURL = "https://globeexservices.com/letstalk/check_contact.php";
     String HttpURLin = "https://globeexservices.com/letstalk/invite.php";
     HashMap<String, String> hashMap = new HashMap<>();
@@ -343,8 +342,7 @@ public class FriendListTabFragment extends Fragment implements FriendListAdapter
                 hashMap.put("phonec", params[0]);
                 hashMap.put("nameec", params[1]);
                 hashMap.put("username", params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURL);
-                return finalResult;
+                return httpParse.postRequest(HttpURL, hashMap);
             }
         }
 
@@ -373,8 +371,7 @@ public class FriendListTabFragment extends Fragment implements FriendListAdapter
                 hashMap.put("phonein", params[0]);
                 hashMap.put("nameofsender", params[1]);
                 hashMap.put("nameoff", params[2]);
-                finalResult = httpParse.postRequest(hashMap, HttpURLin);
-                return finalResult;
+                return httpParse.postRequest(HttpURLin, hashMap);
             }
         }
 

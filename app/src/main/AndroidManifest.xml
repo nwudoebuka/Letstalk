@@ -65,9 +65,9 @@
         <activity android:name=".activity.AttachmentView" />
         <activity android:name=".activity.FullImageView" />
 
-        <!--<service android:name=".MyService" android:enabled="true" android:exported="true" />-->
         <service android:name=".services.PhoneContactIntentService" />
         <service android:name=".xmpp.XmppConnectionService" />
+        <service android:name=".services.MyService" android:exported="false" android:enabled="true" />
 
         <receiver android:name=".services.MyBroadcastReceiver">
             <intent-filter>
